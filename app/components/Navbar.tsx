@@ -1,7 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { auth, signOut, signIn } from "@/auth";
-import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 
 const Navbar = async () => {
@@ -17,36 +19,76 @@ const Navbar = async () => {
                 <div className="flex items-center gap-5" >
                     {session && session.user ? (
                         <>
-                            <Link href={"/startup/create"}>
-                                <span>Create</span>
-                            </Link>
 
-                            <Select>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Professores"/>
-                                </SelectTrigger>
-                            </Select>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>Professores</DropdownMenuTrigger>
+                                <DropdownMenuContent>
 
-                            <Link href={`/user/${session.user.id}`}>
-                                <span>{session?.user?.name}</span>
-                            </Link>
+                                    <DropdownMenuItem>
+                                        <Link href={"/professor/cadastro"}>
+                                            Cadastro
+                                        </Link>
+                                    </DropdownMenuItem>
 
-                            <form action={async () => {
-                                "use server"
-                                await signOut({ redirectTo: "/" })
-                            }}>
-                                <button type="submit" className="text-red-400">Logout</button>
-                            </form>
+                                    <DropdownMenuItem>
+                                        <Link href={"/professor/relatorio"}>
+                                            Relatório
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>Cursos</DropdownMenuTrigger>
+                                <DropdownMenuContent>
+
+                                    <DropdownMenuItem>
+                                        <Link href={"/curso/cadastro"}>
+                                            Cadastro
+                                        </Link>
+                                    </DropdownMenuItem>
+
+                                    <DropdownMenuItem>
+                                        <Link href={"/curso/relatorio"}>
+                                            Relatório
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>
+                                    <span>{session?.user?.name}</span>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+
+                                    <DropdownMenuItem>
+                                        <Link href={`/usuario/${session.user.id}`}>
+                                            Meu Perfil
+                                        </Link>
+                                    </DropdownMenuItem>
+
+                                    <DropdownMenuItem>
+                                        <form action={async () => {
+                                            "use server"
+                                            await signOut({ redirectTo: "/" })
+                                        }}>
+                                            <button type="submit" className="text-red-400">Logout</button>
+                                        </form>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
 
                         </>
                     ) : (
-                        <form action={async () => {
-                            "use server"
+                        // <form action={async () => {
+                        //     "use server"
 
-                            await signIn('github')
-                        }}>
-                            <button type="submit">Login</button>
-                        </form>
+                        //     await signIn('github')
+                        // }}>
+                        //     <button type="submit">Login</button>
+                        // </form>
+                        <Link href={'/usuario/login'}>Entrar</Link>
                     )}
                 </div>
             </nav>
