@@ -128,7 +128,7 @@
   }
 
   .heading {
-    @apply uppercase bg-black px-6 py-3 font-work-sans font-extrabold text-white sm:text-[54px] sm:leading-[64px] text-[36px] leading-[46px] max-w-5xl text-center my-5
+    @apply bg-gray-100 px-6 py-3 font-work-sans font-extrabold text-black sm:text-[20px] sm:leading-[64px] text-[36px] leading-[46px] max-w-5xl text-center my-5
   }
 
   .sub-heading {
@@ -212,11 +212,34 @@
     background-color: white !important;
     color: black !important;
   }
+
   /* parou no searchform */
 
   .tag-tri {
     @apply before:content-[''] before:absolute before:top-2 before:left-2 before:border-t-[10px] before:border-t-black before:border-r-[10px] before:border-r-transparent after:content-[''] after:absolute after:bottom-2 after:right-2 after:border-b-[10px] after:border-b-black after:border-l-[10px] after:border-l-transparent;
   }
+
+  /* startupform */
+  .cadastro-form {
+    @apply max-w-2xl mx-auto bg-white my-10 space-y-8 px-6;
+  }
+
+  .cadastro-form_label {
+    @apply font-bold text-[18px] text-black;
+  }
+
+  .cadastro-form_col-div {
+    @apply w-full mr-5
+  }
+
+  .cadastro-form_select {
+    @apply w-[180px]
+  }
+
+  .startup-form_error {
+    @apply text-red-500 mb-3 text-sm;
+  }
+
 }
 
 @theme inline {
@@ -300,6 +323,7 @@ body {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

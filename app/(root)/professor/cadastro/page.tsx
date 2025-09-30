@@ -1,0 +1,16 @@
+import ProfessorForm from '@/app/components/ProfessorForm'
+import React from 'react'
+
+const CadastroProfessor = () => {
+  return (
+    <>
+      <section className='pink_container !min-h-[50px]'>
+        <h1 className='heading'>Cadastre seu Professor</h1>
+
+      </section>
+        <ProfessorForm />
+    </>
+  )
+}
+
+export default CadastroProfessor
