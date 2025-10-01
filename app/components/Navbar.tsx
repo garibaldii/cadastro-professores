@@ -3,11 +3,11 @@ import Image from "next/image";
 import { auth, signOut, signIn } from "@/auth";
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { getSession } from "@/lib/actions";
 
 
 const Navbar = async () => {
-    const session = await auth();
+    const session = await getSession();
 
     return (
         <header className="px-5 py-3 bg-white shadow-sm font-work-sans text-black">
@@ -17,7 +17,7 @@ const Navbar = async () => {
                 </Link>
 
                 <div className="flex items-center gap-5" >
-                    {session && session.user ? (
+                    {session && session.id ? (
                         <>
 
                             <DropdownMenu>
@@ -58,12 +58,12 @@ const Navbar = async () => {
 
                             <DropdownMenu>
                                 <DropdownMenuTrigger>
-                                    <span>{session?.user?.name}</span>
+                                    <span>{session.nome}</span>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
 
                                     <DropdownMenuItem>
-                                        <Link href={`/usuario/${session.user.id}`}>
+                                        <Link href={`/usuario/${session.id}`}>
                                             Meu Perfil
                                         </Link>
                                     </DropdownMenuItem>
@@ -88,7 +88,7 @@ const Navbar = async () => {
                         // }}>
                         //     <button type="submit">Login</button>
                         // </form>
-                        <Link href={'/usuario/login'}>Entrar</Link>
+                        <Link href={'/login'}>Entrar</Link>
                     )}
                 </div>
             </nav>
