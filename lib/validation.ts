@@ -2,14 +2,14 @@ import z from 'zod'
 
 //Usuário
 export const createUserSchema = z.object({
-  nome: z.string()
-    .max(50, 'Nome deve ter no máximo 50 caracteres'),
+    nome: z.string()
+        .max(50, 'Nome deve ter no máximo 50 caracteres'),
 
-  email: z.string()
-    .email('Email inválido'),
+    email: z.string()
+        .email('Email inválido'),
 
-  senha: z.string()
-    .regex(/^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).+$/, 'Senha deve conter pelo menos uma letra maiúscula e um caractere especial')
+    senha: z.string()
+        .regex(/^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).+$/, 'Senha deve conter pelo menos uma letra maiúscula e um caractere especial')
 });
 
 
@@ -48,3 +48,38 @@ export const createProfessorSchema = z.object({
     observacoes: z.string().optional()
 });
 export const updateProfessorSchema = createProfessorSchema.partial();
+
+//Curso
+export const createCourseSchema = z.object({
+    nome: z.string().max(100, "Nome deve ter no máximo 100 caracteres"),
+
+    codigo: z
+        .string()
+        .regex(/^\d{1,4}$/, "Código deve conter até 4 algarismos numéricos"),
+
+    sigla: z
+        .string()
+        .min(1, "Sigla deve ter no mínimo 1 caractere")
+        .max(4, "Sigla deve ter no máximo 4 caracteres")
+        .regex(/^[A-Za-z]+$/, "Sigla deve conter apenas letras"),
+
+    modelo: z.enum(["PRESENCIAL", "HIBRIDO", "EAD"], {
+        error: () => ({ message: "Modelo inválido" }),
+    }),
+
+    // coordenadorId: z.number().int("CoordenadorId deve ser um número inteiro"),
+
+    materias: z
+        .array(
+            z.object({
+                nome: z
+                    .string()
+                    .max(100, "Nome da matéria deve ter no máximo 100 caracteres"),
+                cargaHoraria: z
+                    .number()
+                    .int("Carga horária deve ser um número inteiro"),
+                professorId: z.number().int("ProfessorId deve ser um número inteiro"),
+            })
+        )
+        .optional(),
+});
