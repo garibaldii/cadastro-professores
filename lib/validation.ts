@@ -1,5 +1,20 @@
 import z from 'zod'
 
+//Usuário
+export const createUserSchema = z.object({
+  nome: z.string()
+    .max(50, 'Nome deve ter no máximo 50 caracteres'),
+
+  email: z.string()
+    .email('Email inválido'),
+
+  senha: z.string()
+    .regex(/^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).+$/, 'Senha deve conter pelo menos uma letra maiúscula e um caractere especial')
+});
+
+
+//Professor
+
 export const createProfessorSchema = z.object({
     nome: z.string()
         .max(50, 'Nome deve ter no máximo 50 caracteres')
@@ -32,5 +47,4 @@ export const createProfessorSchema = z.object({
 
     observacoes: z.string().optional()
 });
-
 export const updateProfessorSchema = createProfessorSchema.partial();
