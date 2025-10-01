@@ -222,7 +222,7 @@
 
   /* startupform */
   .cadastro-form {
-    @apply max-w-2xl mx-auto bg-white my-10 space-y-8 px-6 py-6 shadow-2xl;
+    @apply max-w-2xl mx-auto bg-white my-10 space-y-8 px-6 py-6 shadow-2xl rounded-xl;
   }
 
   .cadastro-form_label {
