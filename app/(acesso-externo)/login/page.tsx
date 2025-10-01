@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
@@ -5,24 +7,60 @@ import { Mail } from "lucide-react";
 import { LockIcon } from "lucide-react";
 
 import Link from "next/link";
-import React from "react";
+import React, { useActionState } from "react";
+import { login } from "@/lib/actions";
+
+import { useRouter } from "next/navigation";
+
+
+
+
 
 const Login = () => {
+
+  const router = useRouter()
+
+  const handleFormSubmit = async (prevState: any, formData: FormData) => {
+    try {
+      const formValues = {
+        email: formData.get("email") as string,
+        senha: formData.get("senha") as string,
+      };
+
+      console.log(formValues);
+
+      const result = await login(formData)
+
+      console.log(result.data);
+
+      router.push("/")
+
+      return result;
+    } catch (error: any) {
+      console.log(error)
+    }
+  };
+
+  const [state, formAction, isLoading] = useActionState(handleFormSubmit, {
+    error: "",
+    status: "INITIAL",
+  });
+
   return (
-    <form className="cadastro-form !p-10 rounded-lg ">
+    <form className="cadastro-form !p-10 rounded-lg  w-1/3" action={formAction}>
       <header className="flex justify-center">
         <Image src="/logo.png" alt="logo" width={150} height={30} />
       </header>
 
       <hr />
 
-      <div className="flex">
+      <div className="flex justify-center">
         <span>Não tem uma conta?</span>
         <Link
-          href={"/usuario/registro"}
+          href={"/registro"}
           className=" ml-2 underline text-blue-500"
         >
-          Faça o registro
+          Faça o cadastro.
         </Link>
       </div>
 
@@ -48,7 +86,7 @@ const Login = () => {
       </div>
 
       <Button type="submit" className="w-full mb-3">
-        Login
+        {isLoading ? "Entrando..." : "Login"}
       </Button>
 
       <div className="flex justify-center">

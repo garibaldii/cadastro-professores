@@ -1,17 +1,22 @@
 "use client";
 
 import React, { useActionState, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+
 import Image from "next/image";
 import { Mail } from "lucide-react";
 import { LockIcon } from "lucide-react";
 import { LetterText } from "lucide-react";
+import { XCircle } from "lucide-react";
 
 import Link from "next/link";
 import { saveUser } from "@/lib/actions";
 import z from "zod";
 import { createUserSchema } from "@/lib/validation";
+
 
 const Registro = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -24,24 +29,34 @@ const Registro = () => {
         senha: formData.get("senha") as string,
       };
 
-      console.log(formValues);
-
       await createUserSchema.parseAsync(formValues);
 
       const result = await saveUser(formData);
 
-      console.log(result);
+      if (result.error) {
+        toast.error(result.error);
+        return result;
+      }
+
+      toast.success("Conta criada com sucesso! ✅", {
+        description: "Direcionando para a tela de Login",
+        position: 'top-center'
+      });
 
       return result;
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof z.ZodError) {
         const fieldErrors = error.flatten().fieldErrors;
-
         setErrors(fieldErrors as unknown as Record<string, string>);
+      } else {
+        toast.error("Erro inesperado", {
+          description: error.message || "Erro inesperado do servidor",
+          dismissible: true,
+        });
       }
-    } finally {
     }
   };
+
 
   const [state, formAction, isLoading] = useActionState(handleFormSubmit, {
     error: "",
@@ -49,17 +64,17 @@ const Registro = () => {
   });
 
   return (
-    <form className="cadastro-form !p-10 rounded-lg" action={formAction}>
+    <form className="cadastro-form !p-10 rounded-lg  w-1/3" action={formAction}>
       <header className="flex justify-center">
         <Image src="/logo.png" alt="logo" width={150} height={30} />
       </header>
 
       <hr />
 
-      <div className="flex">
+      <div className="flex justify-center">
         <span>Já possui uma conta?</span>
-        <Link href={"/usuario/login"} className=" ml-2 underline text-blue-500">
-          Faça o Login
+        <Link href={"/login"} className=" ml-2 underline text-blue-500">
+          Faça o Login.
         </Link>
       </div>
 
