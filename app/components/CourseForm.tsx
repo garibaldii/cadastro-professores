@@ -42,19 +42,20 @@ const CourseForm = () => {
 
   const handleFormSubmit = async (prevState: any, formData: FormData) => {
     try {
+
       const formValues = {
         nome: formData.get("nome") as string,
         codigo: formData.get("codigo") as string,
         sigla: formData.get("sigla") as string,
         modelo: formData.get("modelo") as string,
-        coordenadorId: formData.get("coordenadorId") as string
+        coordenadorId: Number(formData.get("coordenadorId"))
       }
 
       console.log(formValues)
 
       await createCourseSchema.parseAsync(formValues)
 
-      const result = await saveCourse(formData)
+      const result = await saveCourse(formValues)
 
       toast("Curso cadastrado com sucesso!", {
         description: "Direcionando para a lista de Cursos...",
@@ -67,11 +68,22 @@ const CourseForm = () => {
       console.log(result)
 
       return result
-    } catch (error) {
+    } catch (error: any) {
+
+
+
       if (error instanceof z.ZodError) {
         const fieldErrors = error.flatten().fieldErrors
 
         setErrors(fieldErrors as unknown as Record<string, string>)
+      } else {
+        toast.error("Erro", {
+          description: error.message || "Erro inesperado do servidor",
+          dismissible: true,
+        });
+
+        console.log(JSON.stringify(error))
+
       }
     } finally {
 
@@ -114,7 +126,13 @@ const CourseForm = () => {
           <Input
             id="codigo"
             name='codigo'
-            type='codigo'
+            type='text'
+            inputMode="numeric"
+            maxLength={4}
+            onInput={(e) => {
+              const target = e.target as HTMLInputElement
+              target.value = target.value.replace(/\D/g, "") // remove tudo que não for número
+            }}
             required
             placeholder='ex: 301' />
           {errors.codigo && <p className="startup-form_error">{errors.codigo}</p>}
@@ -156,7 +174,7 @@ const CourseForm = () => {
 
           <SelectContent>
             {professors?.map((prof) => (
-              <SelectItem key={prof.id} value={prof.nome}>
+              <SelectItem key={prof.id} value={String(prof.id)}>
                 {prof.nome}
               </SelectItem>
             ))}
