@@ -55,6 +55,20 @@ export async function getProfessors() {
 
 }
 
+export async function getProfessorById(id: number) {
+  try {
+    const res = await apiFetch(`/professores/${id}`, {
+      method: "GET",
+    })
+
+    const data = await res.json()
+
+    return data.data
+  } catch (error) {
+    console.error("Erro na action: ", error);
+    return { error: "erro inesperado", status: "ERROR" };
+  }
+}
 
 //usuario
 export async function saveUser(form: FormData) {
@@ -125,14 +139,72 @@ async function getUserById(id: string) {
   }
 }
 
-//curso
-export async function saveCourse(form: FormData) {
+// curso.ts
+export async function saveCourse(body: Record<string, any>) {
   try {
-    const body = Object.fromEntries(form.entries());
-
     const res = await apiFetch("/cursos", {
       method: "POST",
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.mensagem);
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Erro na action: ", error);
+    throw error;
+  }
+}
+
+export async function deleteCourse(id: number) {
+  try {
+    const res = await apiFetch(`/cursos/${id}`, {
+      method: "DELETE"
+    })
+
+    if (!res.ok) {
+      const errorData = await res.json()
+      throw new Error(errorData.mensagem)
+    }
+
+    // Se não houver corpo, retorna null
+    const text = await res.text()
+    return text ? JSON.parse(text) : null
+
+  } catch (error) {
+    console.error("Erro na action: ", error)
+    throw error
+  }
+}
+
+export async function updateCourse(id: number, body: Record<string, any>) {
+
+  try {
+    const res = await apiFetch(`/cursos/${id}`, {
+      method: "PUT",
       body: JSON.stringify(body)
+    })
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData?.erro || "Erro ao atualizar curso");
+    }
+
+    return await res.json();
+  } catch (error: any) {
+    console.error("Erro na action: ", error);
+    throw error;
+  }
+
+}
+
+export async function getCourses() {
+  try {
+    const res = await apiFetch("/cursos", {
+      method: "GET",
     })
 
     if (!res.ok) {
@@ -140,16 +212,30 @@ export async function saveCourse(form: FormData) {
       return { error: errorData.message ?? "Erro ao salvar", status: "ERROR" };
     }
 
-    return { error: "", status: "SUCCESS" };
+    const data = await res.json()
+
+    return data.data;
+
   } catch (error) {
     console.error("Erro na action: ", error);
     return { error: "erro inesperado", status: "ERROR" };
   }
 }
 
+export async function getCourseById(id: number) {
+  try {
+    const res = await apiFetch(`/cursos/${id}`, {
+      method: "GET",
+    })
 
+    const data = await res.json()
 
-
+    return data.data
+  } catch (error) {
+    console.error("Erro na action: ", error);
+    return { error: "erro inesperado", status: "ERROR" };
+  }
+}
 
 
 //utilitarios professor
