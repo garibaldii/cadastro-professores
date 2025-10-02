@@ -67,7 +67,7 @@ export const createCourseSchema = z.object({
         error: () => ({ message: "Modelo inválido" }),
     }),
 
-    // coordenadorId: z.number().int("CoordenadorId deve ser um número inteiro"),
+    coordenadorId: z.number().int("CoordenadorId deve ser um número inteiro"),
 
     materias: z
         .array(
