@@ -1,10 +1,12 @@
 "use client"
 
-import { Button } from "@/components/ui/button";
+import ActionCell from "@/app/components/ActionCell";
+import EnumType from "@/app/components/EnumType";
+import { deleteCourse } from "@/lib/actions";
 import { ColumnDef } from "@tanstack/react-table"
 
 export type Professor = {
-    id: string;
+    id: number;
     nome: string;
     email: string;
     titulacao: string;
@@ -37,6 +39,8 @@ export const profColumns: ColumnDef<Professor>[] = [
         accessorKey: "referencia",
         header: "Referência",
     },
+
+
     {
         accessorKey: "lattes",
         header: "Lattes",
@@ -57,17 +61,12 @@ export const profColumns: ColumnDef<Professor>[] = [
     },
     {
         header: "Ações",
-        cell: ({ row }) => (
-            <div>
-                <Button>
-                    Editar
-                </Button>
-
-                <Button>
-                    Excluir
-                </Button>
-            </div>
-        )
+        cell: ({ row }) =>
+            <ActionCell
+                data={row.original}
+                onDeleteFn={deleteCourse}
+                type={EnumType.Professor}
+            />
     }
 
 ];

@@ -1,8 +1,22 @@
 import React from 'react'
 
-const RelatorioCurso = () => {
+import { DataTable } from '../../../components/data-table'
+import { Course, courseColumns } from './columns'
+import { getCourses } from '@/lib/actions'
+
+async function RelatorioCurso() {
+
+  const courses: Course[] = await getCourses()
+
   return (
-    <div>RelatorioCurso</div>
+    <div className='p-3'>
+      <DataTable
+        columns={courseColumns}
+        data={courses}
+        searchFields={["nome", "codigo", "sigla", "modelo", "coordenador"]}
+
+      />
+    </div>
   )
 }
 
