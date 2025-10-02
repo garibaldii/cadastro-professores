@@ -20,7 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import React from "react"
+import React, { useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
@@ -66,6 +66,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [globalFilter, setGlobalFilter] = React.useState(defaultSearch)
+  const [tableData, setTableData] = React.useState(data)
 
   const table = useReactTable({
     data,
@@ -98,8 +99,9 @@ export function DataTable<TData, TValue>({
     },
   })
 
+
   return (
-    <div className="border bg-white">
+    <div className="border bg-white p-10 rounded-md shadow-2xl ">
       {/* Filters */}
       {searchFields.length > 0 && (
         <div className="flex items-center py-4">
@@ -123,9 +125,9 @@ export function DataTable<TData, TValue>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
