@@ -11,6 +11,7 @@ import React, { useActionState } from "react";
 import { login } from "@/lib/actions";
 
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 
 
@@ -37,6 +38,11 @@ const Login = () => {
 
       return result;
     } catch (error: any) {
+
+      toast("Erro ao efetuar login", {
+        description: error
+      })
+
       console.log(error)
     }
   };
