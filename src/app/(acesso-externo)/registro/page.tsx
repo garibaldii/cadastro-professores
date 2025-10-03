@@ -21,7 +21,7 @@ import { useAuthError } from "@/hooks/useAuthError";
 const Registro = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
-  
+
   // Hook para exibir erros de autenticação via toast
   useAuthError();
 

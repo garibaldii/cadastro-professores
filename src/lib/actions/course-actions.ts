@@ -12,7 +12,10 @@ export async function saveCourse(
     // Verificar autenticação
     const session = await getSession();
     if (!session) {
-      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+      return {
+        error: "Não autorizado. Faça login novamente.",
+        status: "ERROR",
+      };
     }
 
     const res = await apiFetch("/cursos", {
@@ -65,7 +68,10 @@ export async function updateCourse(
     // Verificar autenticação
     const session = await getSession();
     if (!session) {
-      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+      return {
+        error: "Não autorizado. Faça login novamente.",
+        status: "ERROR",
+      };
     }
 
     const res = await apiFetch(`/cursos/${id}`, {
@@ -91,7 +97,10 @@ export async function getCourses() {
     // Verificar autenticação
     const session = await getSession();
     if (!session) {
-      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+      return {
+        error: "Não autorizado. Faça login novamente.",
+        status: "ERROR",
+      };
     }
 
     const res = await apiFetch("/cursos", {
@@ -119,7 +128,10 @@ export async function getCourseById(id: number) {
     // Verificar autenticação
     const session = await getSession();
     if (!session) {
-      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+      return {
+        error: "Não autorizado. Faça login novamente.",
+        status: "ERROR",
+      };
     }
 
     const res = await apiFetch(`/cursos/${id}`, {

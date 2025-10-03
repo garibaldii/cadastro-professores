@@ -17,7 +17,7 @@ import { useAuthError } from "@/hooks/useAuthError";
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   // Hook para exibir erros de autenticação via toast
   useAuthError();
 
@@ -38,7 +38,7 @@ function LoginForm() {
       });
 
       // Redirecionar para a página que o usuário estava tentando acessar
-      const redirectTo = searchParams.get('redirect') || '/';
+      const redirectTo = searchParams.get("redirect") || "/";
       router.push(redirectTo);
       return result;
     } catch (error: unknown) {

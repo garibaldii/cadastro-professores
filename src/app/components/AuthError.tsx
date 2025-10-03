@@ -7,7 +7,9 @@ interface AuthErrorProps {
   message?: string;
 }
 
-export default function AuthError({ message = "Sessão expirada. Redirecionando para login..." }: AuthErrorProps) {
+export default function AuthError({
+  message = "Sessão expirada. Redirecionando para login...",
+}: AuthErrorProps) {
   const router = useRouter();
 
   useEffect(() => {

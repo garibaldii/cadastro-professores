@@ -5,7 +5,7 @@ import { Course, courseColumns } from "./columns";
 import { getCourses } from "@/lib/actions/index";
 
 // Página dinâmica devido ao uso de cookies para autenticação
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 async function RelatorioCurso() {
   const courses: Course[] = await getCourses();

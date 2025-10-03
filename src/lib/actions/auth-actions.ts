@@ -89,7 +89,7 @@ export async function logout(): Promise<ActionResponse> {
   try {
     const cookieStore = cookies();
     (await cookieStore).delete("token");
-    
+
     return { error: "", status: "SUCCESS" };
   } catch (error) {
     console.error("Erro ao fazer logout: ", error);
@@ -105,7 +105,7 @@ export async function getSession() {
 
   try {
     const payload = jwtDecode<DecodedToken>(token as string);
-    
+
     // Verifica se o token não expirou
     const currentTime = Date.now() / 1000;
     if (payload.exp && payload.exp < currentTime) {
@@ -113,7 +113,7 @@ export async function getSession() {
       (await cookieStore).delete("token");
       return null;
     }
-    
+
     const user = await getUserById(payload.userId);
     return user?.data ?? null;
   } catch (error) {

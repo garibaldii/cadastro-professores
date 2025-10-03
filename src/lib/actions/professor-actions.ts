@@ -10,7 +10,10 @@ export async function saveProfessor(form: FormData): Promise<ActionResponse> {
     // Verificar autenticação
     const session = await getSession();
     if (!session) {
-      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+      return {
+        error: "Não autorizado. Faça login novamente.",
+        status: "ERROR",
+      };
     }
 
     const body = Object.fromEntries(form.entries());
@@ -41,7 +44,10 @@ export async function updateProfessor(
     // Verificar autenticação
     const session = await getSession();
     if (!session) {
-      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+      return {
+        error: "Não autorizado. Faça login novamente.",
+        status: "ERROR",
+      };
     }
 
     const body = Object.fromEntries(form.entries());
@@ -69,7 +75,10 @@ export async function getProfessors() {
     // Verificar autenticação
     const session = await getSession();
     if (!session) {
-      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+      return {
+        error: "Não autorizado. Faça login novamente.",
+        status: "ERROR",
+      };
     }
 
     const res = await apiFetch("/professores", {
@@ -98,7 +107,10 @@ export async function getProfessorById(id: number) {
     // Verificar autenticação
     const session = await getSession();
     if (!session) {
-      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+      return {
+        error: "Não autorizado. Faça login novamente.",
+        status: "ERROR",
+      };
     }
 
     const res = await apiFetch(`/professores/${id}`, {

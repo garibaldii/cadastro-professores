@@ -8,7 +8,10 @@ export async function getTitulacoes() {
     // Verificar autenticação
     const session = await getSession();
     if (!session) {
-      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+      return {
+        error: "Não autorizado. Faça login novamente.",
+        status: "ERROR",
+      };
     }
 
     const res = await apiFetch(`/enums/titulacao`, {
@@ -28,7 +31,10 @@ export async function getReferencias() {
     // Verificar autenticação
     const session = await getSession();
     if (!session) {
-      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+      return {
+        error: "Não autorizado. Faça login novamente.",
+        status: "ERROR",
+      };
     }
 
     const res = await apiFetch(`/enums/referencia`, {
@@ -47,7 +53,10 @@ export async function getStatusAtividade() {
     // Verificar autenticação
     const session = await getSession();
     if (!session) {
-      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+      return {
+        error: "Não autorizado. Faça login novamente.",
+        status: "ERROR",
+      };
     }
 
     const res = await apiFetch(`/enums/statusAtividade`, {
@@ -66,7 +75,10 @@ export async function getModeloCurso() {
     // Verificar autenticação
     const session = await getSession();
     if (!session) {
-      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+      return {
+        error: "Não autorizado. Faça login novamente.",
+        status: "ERROR",
+      };
     }
 
     const res = await apiFetch("/enums/modeloCurso", {

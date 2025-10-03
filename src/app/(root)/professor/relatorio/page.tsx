@@ -5,7 +5,7 @@ import { DataTable } from "../../../components/data-table";
 import { getProfessors } from "@/lib/actions/index";
 
 // Página dinâmica devido ao uso de cookies para autenticação
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 async function RelatorioProfessor() {
   const professors: Professor[] = await getProfessors();
