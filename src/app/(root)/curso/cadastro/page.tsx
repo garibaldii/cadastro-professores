@@ -1,6 +1,9 @@
 import CourseForm from '@/app/components/CourseForm'
 import React from 'react'
 
+// Página dinâmica devido ao middleware de autenticação
+export const dynamic = 'force-dynamic';
+
 const CadastroCurso = () => {
   return (
     <div>

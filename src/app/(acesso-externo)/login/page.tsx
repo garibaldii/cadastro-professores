@@ -7,14 +7,19 @@ import { Mail } from "lucide-react";
 import { LockIcon } from "lucide-react";
 
 import Link from "next/link";
-import React, { useActionState } from "react";
+import React, { Suspense, useActionState } from "react";
 import { login } from "@/lib/actions/index";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { useAuthError } from "@/hooks/useAuthError";
 
-const Login = () => {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  // Hook para exibir erros de autenticação via toast
+  useAuthError();
 
   const handleFormSubmit = async (prevState: unknown, formData: FormData) => {
     try {
@@ -32,7 +37,9 @@ const Login = () => {
         position: "top-center",
       });
 
-      router.push("/");
+      // Redirecionar para a página que o usuário estava tentando acessar
+      const redirectTo = searchParams.get('redirect') || '/';
+      router.push(redirectTo);
       return result;
     } catch (error: unknown) {
       const errorMessage =
@@ -98,6 +105,14 @@ const Login = () => {
         </Link>
       </div>
     </form>
+  );
+}
+
+const Login = () => {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 };
 

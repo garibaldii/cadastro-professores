@@ -16,10 +16,14 @@ import { saveUser } from "@/lib/actions/index";
 import z from "zod";
 import { createUserSchema } from "@/lib/validation";
 import { useRouter } from "next/navigation";
+import { useAuthError } from "@/hooks/useAuthError";
 
 const Registro = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
+  
+  // Hook para exibir erros de autenticação via toast
+  useAuthError();
 
   const handleFormSubmit = async (prevState: unknown, formData: FormData) => {
     try {

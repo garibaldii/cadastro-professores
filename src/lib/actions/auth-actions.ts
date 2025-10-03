@@ -9,6 +9,7 @@ interface DecodedToken {
   userId: string;
   userName: string;
   email: string;
+  exp?: number;
 }
 
 export async function saveUser(form: FormData): Promise<ActionResponse> {
@@ -84,6 +85,18 @@ async function getUserById(id: string) {
   }
 }
 
+export async function logout(): Promise<ActionResponse> {
+  try {
+    const cookieStore = cookies();
+    (await cookieStore).delete("token");
+    
+    return { error: "", status: "SUCCESS" };
+  } catch (error) {
+    console.error("Erro ao fazer logout: ", error);
+    return { error: getErrorMessage(error), status: "ERROR" };
+  }
+}
+
 export async function getSession() {
   const cookieStore = cookies();
   const token = (await cookieStore).get("token")?.value;
@@ -92,10 +105,21 @@ export async function getSession() {
 
   try {
     const payload = jwtDecode<DecodedToken>(token as string);
+    
+    // Verifica se o token não expirou
+    const currentTime = Date.now() / 1000;
+    if (payload.exp && payload.exp < currentTime) {
+      // Token expirado, remove o cookie
+      (await cookieStore).delete("token");
+      return null;
+    }
+    
     const user = await getUserById(payload.userId);
     return user?.data ?? null;
   } catch (error) {
     console.error("Erro ao obter sessão: ", error);
+    // Se há erro ao decodificar, remove o cookie inválido
+    (await cookieStore).delete("token");
     return null;
   }
 }

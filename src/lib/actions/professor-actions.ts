@@ -3,9 +3,16 @@
 import { apiFetch } from "../api";
 import { ActionResponse, getErrorMessage, handleApiResponse } from "./common";
 import { revalidatePath } from "next/cache";
+import { getSession } from "./auth-actions";
 
 export async function saveProfessor(form: FormData): Promise<ActionResponse> {
   try {
+    // Verificar autenticação
+    const session = await getSession();
+    if (!session) {
+      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+    }
+
     const body = Object.fromEntries(form.entries());
 
     const res = await apiFetch("/professores", {
@@ -31,6 +38,12 @@ export async function updateProfessor(
   form: FormData
 ): Promise<ActionResponse> {
   try {
+    // Verificar autenticação
+    const session = await getSession();
+    if (!session) {
+      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+    }
+
     const body = Object.fromEntries(form.entries());
 
     const res = await apiFetch(`/professores/${id}`, {
@@ -53,6 +66,12 @@ export async function updateProfessor(
 
 export async function getProfessors() {
   try {
+    // Verificar autenticação
+    const session = await getSession();
+    if (!session) {
+      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+    }
+
     const res = await apiFetch("/professores", {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -76,6 +95,12 @@ export async function getProfessors() {
 
 export async function getProfessorById(id: number) {
   try {
+    // Verificar autenticação
+    const session = await getSession();
+    if (!session) {
+      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+    }
+
     const res = await apiFetch(`/professores/${id}`, {
       method: "GET",
     });
@@ -90,6 +115,12 @@ export async function getProfessorById(id: number) {
 
 export async function deleteProfessor(id: number): Promise<void> {
   try {
+    // Verificar autenticação
+    const session = await getSession();
+    if (!session) {
+      throw new Error("Não autorizado. Faça login novamente.");
+    }
+
     const res = await apiFetch(`/professores/${id}`, {
       method: "DELETE",
     });

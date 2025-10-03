@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { signOut } from "@/auth";
+import { redirect } from "next/navigation";
 
 import {
   DropdownMenu,
@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getSession } from "@/lib/actions/index";
+import { getSession, logout } from "@/lib/actions/index";
 
 const Navbar = async () => {
   const session = await getSession();
@@ -62,7 +62,8 @@ const Navbar = async () => {
                     <form
                       action={async () => {
                         "use server";
-                        await signOut({ redirectTo: "/" });
+                        await logout();
+                        redirect("/login");
                       }}
                     >
                       <button type="submit" className="text-red-400">

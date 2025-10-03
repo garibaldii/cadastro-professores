@@ -3,11 +3,18 @@
 import { apiFetch } from "../api";
 import { ActionResponse, getErrorMessage, handleApiResponse } from "./common";
 import { revalidatePath } from "next/cache";
+import { getSession } from "./auth-actions";
 
 export async function saveCourse(
   body: Record<string, unknown>
 ): Promise<ActionResponse> {
   try {
+    // Verificar autenticação
+    const session = await getSession();
+    if (!session) {
+      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+    }
+
     const res = await apiFetch("/cursos", {
       method: "POST",
       body: JSON.stringify(body),
@@ -28,6 +35,12 @@ export async function saveCourse(
 
 export async function deleteCourse(id: number): Promise<void> {
   try {
+    // Verificar autenticação
+    const session = await getSession();
+    if (!session) {
+      throw new Error("Não autorizado. Faça login novamente.");
+    }
+
     const res = await apiFetch(`/cursos/${id}`, {
       method: "DELETE",
     });
@@ -49,6 +62,12 @@ export async function updateCourse(
   body: Record<string, unknown>
 ): Promise<ActionResponse> {
   try {
+    // Verificar autenticação
+    const session = await getSession();
+    if (!session) {
+      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+    }
+
     const res = await apiFetch(`/cursos/${id}`, {
       method: "PUT",
       body: JSON.stringify(body),
@@ -69,6 +88,12 @@ export async function updateCourse(
 
 export async function getCourses() {
   try {
+    // Verificar autenticação
+    const session = await getSession();
+    if (!session) {
+      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+    }
+
     const res = await apiFetch("/cursos", {
       method: "GET",
     });
@@ -91,6 +116,12 @@ export async function getCourses() {
 
 export async function getCourseById(id: number) {
   try {
+    // Verificar autenticação
+    const session = await getSession();
+    if (!session) {
+      return { error: "Não autorizado. Faça login novamente.", status: "ERROR" };
+    }
+
     const res = await apiFetch(`/cursos/${id}`, {
       method: "GET",
     });

@@ -1,3 +1,6 @@
+// Página dinâmica devido ao middleware de autenticação
+export const dynamic = 'force-dynamic';
+
 export default function Home() {
   return (
     <>
