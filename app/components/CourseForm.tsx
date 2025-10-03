@@ -117,6 +117,7 @@ const CourseForm = () => {
             id="sigla"
             name='sigla'
             required
+            maxLength={4}
             placeholder='ex: DSM' />
           {errors.sigla && <p className="startup-form_error">{errors.sigla}</p>}
         </div>
