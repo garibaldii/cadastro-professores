@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,48 +8,45 @@ import { LockIcon } from "lucide-react";
 
 import Link from "next/link";
 import React, { useActionState } from "react";
-import { login } from "@/lib/actions";
+import { login } from "@/lib/actions/index";
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-
-
-
-
 const Login = () => {
+  const router = useRouter();
 
-  const router = useRouter()
-
-  const handleFormSubmit = async (prevState: any, formData: FormData) => {
+  const handleFormSubmit = async (prevState: unknown, formData: FormData) => {
     try {
-      const formValues = {
-        email: formData.get("email") as string,
-        senha: formData.get("senha") as string,
-      };
+      const result = await login(formData);
 
-      console.log(formValues);
+      if (result.status === "ERROR") {
+        toast.error("Erro ao efetuar login", {
+          description: result.error,
+        });
+        return result;
+      }
 
-      const result = await login(formData)
+      toast.success("Login realizado com sucesso!", {
+        description: "Redirecionando...",
+        position: "top-center",
+      });
 
-      console.log(result.data);
-
-      router.push("/")
-
+      router.push("/");
       return result;
-    } catch (error: any) {
-
-      toast("Erro ao efetuar login", {
-        description: error
-      })
-
-      console.log(error)
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Erro inesperado";
+      toast.error("Erro ao efetuar login", {
+        description: errorMessage,
+      });
+      return { error: errorMessage, status: "ERROR" as const };
     }
   };
 
-  const [state, formAction, isLoading] = useActionState(handleFormSubmit, {
+  const [, formAction, isLoading] = useActionState(handleFormSubmit, {
     error: "",
-    status: "INITIAL",
+    status: "ERROR" as const,
   });
 
   return (
@@ -62,10 +59,7 @@ const Login = () => {
 
       <div className="flex justify-center">
         <span>Não tem uma conta?</span>
-        <Link
-          href={"/registro"}
-          className=" ml-2 underline text-blue-500"
-        >
+        <Link href={"/registro"} className=" ml-2 underline text-blue-500">
           Faça o cadastro.
         </Link>
       </div>

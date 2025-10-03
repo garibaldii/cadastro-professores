@@ -2,7 +2,7 @@
 
 import ActionCell from "@/app/components/ActionCell";
 import EnumType from "@/app/components/EnumType";
-import { deleteCourse, deleteProfessor } from "@/lib/actions";
+import { deleteProfessor } from "@/lib/actions/index";
 import { ColumnDef } from "@tanstack/react-table";
 
 export type Professor = {
@@ -63,6 +63,9 @@ export const profColumns: ColumnDef<Professor>[] = [
       <ActionCell
         data={row.original}
         onDeleteFn={deleteProfessor}
+        onUpdateFn={async () => {
+          // The update will be handled by revalidatePath in the action
+        }}
         type={EnumType.Professor}
       />
     ),

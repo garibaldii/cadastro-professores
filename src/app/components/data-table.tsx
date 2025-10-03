@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   ColumnDef,
@@ -10,7 +10,7 @@ import {
   getSortedRowModel,
   SortingState,
   useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 
 import {
   Table,
@@ -19,16 +19,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import React, { useEffect } from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/table";
+import React from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 function normalizeString(value: string, whiteSpaceReplace = "-") {
-  const alphabetSpecialChars =
-    "àáäâãèéëêìíïîòóöôùúüûñçßÿœæŕśńṕẃǵǹḿǘẍźḧ·/_,:;"
-  const alphabetCommonChars =
-    "aaaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------"
+  const alphabetSpecialChars = "àáäâãèéëêìíïîòóöôùúüûñçßÿœæŕśńṕẃǵǹḿǘẍźḧ·/_,:;";
+  const alphabetCommonChars = "aaaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------";
 
   const normalizedValue = value
     .trim()
@@ -37,22 +35,21 @@ function normalizeString(value: string, whiteSpaceReplace = "-") {
     .replace(/ /g, whiteSpaceReplace)
     .replace(/--/g, "-")
     .replace(/[&/\\#,+()$~%.'":*?<>{}\[\]]/g, "")
-    .replace(
-      new RegExp(alphabetSpecialChars.split("").join("|"), "g"),
-      (c) => alphabetCommonChars.charAt(alphabetSpecialChars.indexOf(c))
-    )
+    .replace(new RegExp(alphabetSpecialChars.split("").join("|"), "g"), (c) =>
+      alphabetCommonChars.charAt(alphabetSpecialChars.indexOf(c))
+    );
 
-  return normalizedValue
+  return normalizedValue;
 }
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-  pageSize?: number
-  searchFields?: string[]
-  defaultSearch?: string
-  searchPlaceholder?: string
-  onRowClick?: (row: TData) => void
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  pageSize?: number;
+  searchFields?: string[];
+  defaultSearch?: string;
+  searchPlaceholder?: string;
+  onRowClick?: (row: TData) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -64,9 +61,8 @@ export function DataTable<TData, TValue>({
   searchPlaceholder = "Filtre por dados abaixo",
   onRowClick,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [globalFilter, setGlobalFilter] = React.useState(defaultSearch)
-  const [tableData, setTableData] = React.useState(data)
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [globalFilter, setGlobalFilter] = React.useState(defaultSearch);
 
   const table = useReactTable({
     data,
@@ -79,12 +75,14 @@ export function DataTable<TData, TValue>({
     onGlobalFilterChange: setGlobalFilter,
     filterFns: {
       fuzzy: (row, _, value) => {
-        const data = row.original
-        const search = normalizeString(value)
+        const data = row.original;
+        const search = normalizeString(value);
 
         return searchFields.some((field) =>
-          normalizeString((data as any)[field].toString()).includes(search)
-        )
+          normalizeString(
+            String((data as Record<string, unknown>)[field])
+          ).includes(search)
+        );
       },
     },
     globalFilterFn: "fuzzy" as FilterFnOption<TData>,
@@ -97,8 +95,7 @@ export function DataTable<TData, TValue>({
         pageSize,
       },
     },
-  })
-
+  });
 
   return (
     <div className="border bg-white p-10 rounded-md shadow-2xl ">
@@ -125,15 +122,15 @@ export function DataTable<TData, TValue>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody >
+          <TableBody>
             {table.getRowModel().rows.length > 0 ? (
               <>
                 {table.getRowModel().rows.map((row) => (
@@ -144,10 +141,7 @@ export function DataTable<TData, TValue>({
                     onClick={() => onRowClick?.(row.original)}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className="h-12 align-middle"
-                      >
+                      <TableCell key={cell.id} className="h-12 align-middle">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
@@ -170,10 +164,7 @@ export function DataTable<TData, TValue>({
               </>
             ) : (
               <TableRow className="h-12">
-                <TableCell
-                  colSpan={columns.length}
-                  className="text-center"
-                >
+                <TableCell colSpan={columns.length} className="text-center">
                   No results.
                 </TableCell>
               </TableRow>
@@ -204,5 +195,5 @@ export function DataTable<TData, TValue>({
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -14,7 +14,7 @@ import {
   getStatusAtividade,
   getTitulacoes,
   updateProfessor,
-} from "@/lib/actions";
+} from "@/lib/actions/index";
 import { Pencil, Send } from "lucide-react";
 import React, { useActionState, useEffect, useState } from "react";
 import {
@@ -79,7 +79,7 @@ const ProfessorEditSheet = ({ data, onUpdateFn }: ProfessorEditSheetProps) => {
     fetchData();
   }, [data.id]);
 
-  const handleFormSubmit = async (prevState: any, formData: FormData) => {
+  const handleFormSubmit = async (prevState: unknown, formData: FormData) => {
     try {
       const formValues = {
         nome: formData.get("nome") as string,
@@ -94,31 +94,43 @@ const ProfessorEditSheet = ({ data, onUpdateFn }: ProfessorEditSheetProps) => {
 
       await updateProfessorSchema.parseAsync(formValues);
 
-      console.log(formValues);
-
       const result = await updateProfessor(data.id, formData);
 
-      console.log(result);
+      if (result.status === "ERROR") {
+        toast.error("Erro ao atualizar", {
+          description: result.error,
+          position: "top-center",
+        });
+        return result;
+      }
 
-      toast.success("Sucesso!", {
-        description: "Dados atualizados com sucesso",
+      toast.success("Professor atualizado!", {
+        description: "Os dados foram atualizados com sucesso",
         duration: 4000,
         position: "top-center",
       });
 
       setIsOpen(false);
 
+      // Call the update callback if provided
+      if (onUpdateFn) {
+        await onUpdateFn(data.id);
+      }
+
       return result;
-    } catch (error: any) {
-      toast.error("Erro", {
-        description: error.message || "Erro inesperado do servidor",
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Erro inesperado do servidor";
+      toast.error("Erro de validação", {
+        description: errorMessage,
         dismissible: true,
         position: "top-center",
       });
+      return { error: errorMessage, status: "ERROR" };
     }
   };
 
-  const [state, formAction, isLoading] = useActionState(handleFormSubmit, {
+  const [, formAction, isLoading] = useActionState(handleFormSubmit, {
     error: "",
     status: "INITIAL",
   });

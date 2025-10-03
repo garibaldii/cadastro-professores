@@ -10,20 +10,18 @@ import Image from "next/image";
 import { Mail } from "lucide-react";
 import { LockIcon } from "lucide-react";
 import { LetterText } from "lucide-react";
-import { XCircle } from "lucide-react";
 
 import Link from "next/link";
-import { saveUser } from "@/lib/actions";
+import { saveUser } from "@/lib/actions/index";
 import z from "zod";
 import { createUserSchema } from "@/lib/validation";
 import { useRouter } from "next/navigation";
 
-
 const Registro = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const router = useRouter()
+  const router = useRouter();
 
-  const handleFormSubmit = async (prevState: any, formData: FormData) => {
+  const handleFormSubmit = async (prevState: unknown, formData: FormData) => {
     try {
       const formValues = {
         nome: formData.get("nome") as string,
@@ -35,36 +33,44 @@ const Registro = () => {
 
       const result = await saveUser(formData);
 
-      router.push("/login")
-
-      if (result.error) {
-        toast.error(result.error);
+      if (result.status === "ERROR") {
+        toast.error("Erro ao criar conta", {
+          description: result.error,
+          position: "top-center",
+        });
         return result;
       }
 
       toast.success("Conta criada com sucesso! ✅", {
         description: "Direcionando para a tela de Login",
-        position: 'top-center'
+        position: "top-center",
       });
 
+      router.push("/login");
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof z.ZodError) {
         const fieldErrors = error.flatten().fieldErrors;
         setErrors(fieldErrors as unknown as Record<string, string>);
       } else {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "Erro inesperado do servidor";
         toast.error("Erro inesperado", {
-          description: error.message || "Erro inesperado do servidor",
+          description: errorMessage,
           dismissible: true,
         });
       }
+      const errorMessage =
+        error instanceof Error ? error.message : "Erro inesperado";
+      return { error: errorMessage, status: "ERROR" as const };
     }
   };
 
-
-  const [state, formAction, isLoading] = useActionState(handleFormSubmit, {
+  const [, formAction, isLoading] = useActionState(handleFormSubmit, {
     error: "",
-    status: "INITIAL",
+    status: "ERROR" as const,
   });
 
   return (
