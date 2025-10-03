@@ -16,10 +16,12 @@ import Link from "next/link";
 import { saveUser } from "@/lib/actions";
 import z from "zod";
 import { createUserSchema } from "@/lib/validation";
+import { useRouter } from "next/navigation";
 
 
 const Registro = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const router = useRouter()
 
   const handleFormSubmit = async (prevState: any, formData: FormData) => {
     try {
@@ -32,6 +34,8 @@ const Registro = () => {
       await createUserSchema.parseAsync(formValues);
 
       const result = await saveUser(formData);
+
+      router.push("/login")
 
       if (result.error) {
         toast.error(result.error);
