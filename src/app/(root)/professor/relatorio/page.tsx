@@ -12,7 +12,7 @@ async function RelatorioProfessor() {
 
   console.log(professors);
   return (
-    <div className="p-3">
+    <div className="px-12 py-8 pt-[5%]">
       <DataTable
         columns={profColumns}
         data={professors}

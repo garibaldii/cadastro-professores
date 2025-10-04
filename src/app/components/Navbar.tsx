@@ -14,7 +14,7 @@ const Navbar = async () => {
   const session = await getSession();
 
   return (
-    <header className="px-5 py-3 bg-white shadow-sm font-work-sans text-black">
+    <header className="px-5 py-3 bg-gray-50 shadow-sm font-work-sans text-gray-800 border-b border-gray-200">
       <nav className="flex justify-between items-center ">
         <Link href="/">
           <Image src="/logo.png" alt="logo" width={144} height={30} />
@@ -24,7 +24,9 @@ const Navbar = async () => {
           {session && session.id ? (
             <>
               <DropdownMenu>
-                <DropdownMenuTrigger>Professores</DropdownMenuTrigger>
+                <DropdownMenuTrigger className="text-black-400 hover:text-rose-500 cursor-pointer transition-colors duration-200 font-medium">
+                  Professores
+                </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem>
                     <Link href={"/professor/cadastro"}>Cadastro</Link>
@@ -37,7 +39,9 @@ const Navbar = async () => {
               </DropdownMenu>
 
               <DropdownMenu>
-                <DropdownMenuTrigger>Cursos</DropdownMenuTrigger>
+                <DropdownMenuTrigger className="text-black-400 hover:text-rose-500 cursor-pointer transition-colors duration-200 font-medium">
+                  Cursos
+                </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem>
                     <Link href={"/curso/cadastro"}>Cadastro</Link>
@@ -50,7 +54,7 @@ const Navbar = async () => {
               </DropdownMenu>
 
               <DropdownMenu>
-                <DropdownMenuTrigger>
+                <DropdownMenuTrigger className="text-black-400 hover:text-rose-500 cursor-pointer transition-colors duration-200 font-medium">
                   <span>{session.nome}</span>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
@@ -82,7 +86,12 @@ const Navbar = async () => {
             // }}>
             //     <button type="submit">Login</button>
             // </form>
-            <Link href={"/login"}>Entrar</Link>
+            <Link
+              href={"/login"}
+              className="text-rose-400 hover:text-rose-500 cursor-pointer transition-colors duration-200 font-medium"
+            >
+              Entrar
+            </Link>
           )}
         </div>
       </nav>
