@@ -1,15 +1,16 @@
 "use client";
 
-import ExcelProfessorRegister from "@/app/components/ExcelProfessorRegister";
 import ProfessorForm from "@/app/components/ProfessorForm";
-import { Switch } from "@/components/ui/switch";
+import ImportModal from "@/app/components/ImportCSVModal";
+import { Button } from "@/components/ui/button";
+import { FileText, FileSpreadsheet } from "lucide-react";
 import React, { useState } from "react";
 
 // Página dinâmica devido ao middleware de autenticação
 export const dynamic = "force-dynamic";
 
 const CadastroProfessor = () => {
-  const [manualRegister, setManualRegister] = useState(true);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   return (
     <div>
@@ -17,28 +18,32 @@ const CadastroProfessor = () => {
         <h1 className="heading">Cadastre seu Professor</h1>
       </section>
 
-      <div className="flex justify-center text-center space-x-2 w-full">
-        <div>
-          <h1 className="text-2xl">
-            Clique aqui para alterar o tipo de cadastro
-          </h1>
-          <div className="flex-between">
-            <label htmlFor="tipoForm">
-              Cadastro Selecionado:{" "}
-              <span className="font-bold">
-                {manualRegister ? "Manual" : "Planilha Excel"}
-              </span>
-            </label>
-            <Switch
-              id="tipoForm"
-              checked={manualRegister}
-              onCheckedChange={setManualRegister}
-            />
-          </div>
+      <div className="flex justify-center items-center pt-4">
+        <div className="text-center">
+            <div className="p-4 border rounded-lg bg-green-50">
+              <h3 className="font-semibold mb-2">Importação em Lote</h3>
+              <p className="text-sm text-gray-600 mb-3">
+                Importe vários professores usando planilha Excel
+              </p>
+              <Button
+                className="w-full bg-green-600 hover:bg-green-700"
+                onClick={() => setIsImportModalOpen(true)}
+              >
+                <FileSpreadsheet className="w-4 h-4 mr-2" />
+                Importar CSV
+              </Button>
+            </div>
         </div>
       </div>
 
-      {manualRegister ? <ProfessorForm /> : <ExcelProfessorRegister />}
+      <div id="professor-form">
+        <ProfessorForm />
+      </div>
+
+      <ImportModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+      />
     </div>
   );
 };
