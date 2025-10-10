@@ -11,7 +11,7 @@ async function RelatorioCurso() {
   const courses: Course[] = await getCourses();
 
   return (
-    <div className="p-3">
+    <div className="px-12 py-8">
       <DataTable
         columns={courseColumns}
         data={courses}

@@ -9,17 +9,23 @@
 :root {
   --font-work-sans: "Work Sans", sans-serif;
 
-  --color-primary: #EE2B69;
-  --color-primary-100: #FFE8F0;
-  --color-secondary: #FBE843;
+  --color-primary: #ee2b69;
+  --color-primary-100: #ffe8f0;
+  --color-secondary: #fbe843;
 
   --color-black: #000000;
   --color-black-100: #333333;
   --color-black-200: #141413;
-  --color-black-300: #7D8087;
+  --color-black-300: #7d8087;
 
-  --color-white: #FFFFFF;
-  --color-white-100: #F7F7F7;
+  --color-white: #ffffff;
+  --color-white-100: #f7f7f7;
+
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-600: #4b5563;
+  --color-gray-800: #1f2937;
 
   --radius: 0.625rem;
 
@@ -120,7 +126,7 @@
   }
 
   .pink_container {
-    @apply w-full bg-primary min-h-[530px] flex justify-center items-center flex-col py-10 px-6;
+    @apply w-full bg-gradient-to-br from-gray-100 to-gray-200 min-h-[120px] flex justify-center items-center flex-col py-6 px-6 border-b border-gray-300;
   }
 
   .tag {
@@ -128,7 +134,7 @@
   }
 
   .heading {
-    @apply bg-gray-100 px-6 py-3 font-work-sans font-extrabold text-black sm:text-[20px] sm:leading-[64px] text-[36px] leading-[46px] max-w-5xl text-center my-5
+    @apply px-6 py-2 font-work-sans font-extrabold text-gray-800 sm:text-[28px] sm:leading-[40px] text-[40px] leading-[52px] max-w-5xl text-center my-0;
   }
 
   .sub-heading {
@@ -205,7 +211,6 @@
   .login {
     @apply border-[5px] py-4 border-black bg-white text-black relative shadow-lg font-work-sans font-medium hover:shadow-none transition-all duration-500;
   }
-  
 
   /* Se precisar do !important em alguma propriedade: */
   .login {
@@ -222,7 +227,7 @@
 
   /* startupform */
   .cadastro-form {
-    @apply max-w-2xl mx-auto bg-white my-10 space-y-8 px-6 py-6 shadow-2xl rounded-xl;
+    @apply max-w-5xl mx-auto bg-white my-10 space-y-8 px-6 py-6 shadow-2xl rounded-xl;
   }
 
   .cadastro-form_label {
@@ -230,17 +235,16 @@
   }
 
   .cadastro-form_col-div {
-    @apply w-full mr-5
+    @apply w-full mr-5;
   }
 
   .cadastro-form_select {
-    @apply w-[180px]
+    @apply w-full;
   }
 
   .startup-form_error {
     @apply text-red-500 mb-3 text-sm;
   }
-
 }
 
 @theme inline {
@@ -283,7 +287,7 @@
 }
 
 body {
-  font-family: var(--font-work-sans)
+  font-family: var(--font-work-sans);
 }
 
 .dark {
@@ -327,5 +331,22 @@ body {
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Garantir que o HTML e body ocupem toda a altura */
+  html,
+  body {
+    height: 100%;
+  }
+
+  /* Garantir que o footer sempre tenha uma altura consistente */
+  footer {
+    flex-shrink: 0;
+    min-height: 80px;
+  }
+
+  /* Adicionar espaçamento inferior para evitar sobreposição de conteúdo flutuante */
+  main {
+    padding-bottom: 2rem;
   }
 }

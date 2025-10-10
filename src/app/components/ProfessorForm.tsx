@@ -133,7 +133,7 @@ const ProfessorForm = () => {
         </div>
       </div>
 
-      <div className="flex-between">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label htmlFor="titulacao" className="cadastro-form_label">
             Titulação

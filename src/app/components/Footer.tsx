@@ -3,26 +3,15 @@ import BodyText from "./BodyText";
 
 export default function Footer() {
   return (
-    <div
-      style={{
-      
-        backgroundColor: "#fff",
-        color: "#fff",
-        paddingTop: "16px",
-        paddingBottom: "16px",
-        textAlign: "center",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <BodyText text="Fatec Votorantim" />
-        <BodyText text={`© Todos os direitos reservados`} />
+    <footer className="bg-white border-t border-gray-200 mt-auto">
+      <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center justify-center space-y-2">
+          <BodyText text="Fatec Votorantim" />
+          <BodyText
+            text={`© ${new Date().getFullYear()} Todos os direitos reservados`}
+          />
+        </div>
       </div>
-    </div>
+    </footer>
   );
 }
