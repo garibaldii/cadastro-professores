@@ -10,7 +10,6 @@ export const dynamic = "force-dynamic";
 async function RelatorioProfessor() {
   const professors: Professor[] = await getProfessors();
 
-  console.log(professors);
   return (
     <div className="px-12 py-8 pt-[5%]">
       <DataTable

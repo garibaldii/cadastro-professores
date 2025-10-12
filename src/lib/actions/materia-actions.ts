@@ -5,7 +5,7 @@ import { ActionResponse, getErrorMessage, handleApiResponse } from "./common";
 import { revalidatePath } from "next/cache";
 import { getSession } from "./auth-actions";
 
-export async function saveCourse(
+export async function saveMateria(
   body: Record<string, unknown>
 ): Promise<ActionResponse> {
   try {
@@ -18,7 +18,7 @@ export async function saveCourse(
       };
     }
 
-    const res = await apiFetch("/cursos", {
+    const res = await apiFetch("/materias", {
       method: "POST",
       body: JSON.stringify(body),
     });
@@ -26,7 +26,7 @@ export async function saveCourse(
     const result = await handleApiResponse(res);
 
     if (result.status === "SUCCESS") {
-      revalidatePath("/curso/relatorio");
+      revalidatePath("/curso/cadastro");
     }
 
     return result;
@@ -36,31 +36,7 @@ export async function saveCourse(
   }
 }
 
-export async function deleteCourse(id: number): Promise<void> {
-  try {
-    // Verificar autenticação
-    const session = await getSession();
-    if (!session) {
-      throw new Error("Não autorizado. Faça login novamente.");
-    }
-
-    const res = await apiFetch(`/cursos/${id}`, {
-      method: "DELETE",
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.mensagem || "Erro ao deletar curso");
-    }
-
-    revalidatePath("/curso/relatorio");
-  } catch (error) {
-    console.error("Erro na action: ", error);
-    throw new Error(getErrorMessage(error));
-  }
-}
-
-export async function updateCourse(
+export async function updateMateria(
   id: number,
   body: Record<string, unknown>
 ): Promise<ActionResponse> {
@@ -74,7 +50,7 @@ export async function updateCourse(
       };
     }
 
-    const res = await apiFetch(`/cursos/${id}`, {
+    const res = await apiFetch(`/materias/${id}`, {
       method: "PUT",
       body: JSON.stringify(body),
     });
@@ -82,7 +58,7 @@ export async function updateCourse(
     const result = await handleApiResponse(res);
 
     if (result.status === "SUCCESS") {
-      revalidatePath("/curso/relatorio");
+      revalidatePath("/curso/cadastro");
     }
 
     return result;
@@ -92,7 +68,7 @@ export async function updateCourse(
   }
 }
 
-export async function getCourses() {
+export async function getMaterias() {
   try {
     // Verificar autenticação
     const session = await getSession();
@@ -103,14 +79,14 @@ export async function getCourses() {
       };
     }
 
-    const res = await apiFetch("/cursos", {
+    const res = await apiFetch("/materias", {
       method: "GET",
     });
 
     if (!res.ok) {
       const errorData = await res.json();
       return {
-        error: errorData.message ?? "Erro ao buscar cursos",
+        error: errorData.message ?? "Erro ao buscar matérias",
         status: "ERROR",
       };
     }
@@ -123,7 +99,7 @@ export async function getCourses() {
   }
 }
 
-export async function getCourseById(id: number) {
+export async function getMateriaById(id: number) {
   try {
     // Verificar autenticação
     const session = await getSession();
@@ -134,23 +110,38 @@ export async function getCourseById(id: number) {
       };
     }
 
-    const res = await apiFetch(`/cursos/${id}`, {
+    const res = await apiFetch(`/materias/${id}`, {
       method: "GET",
+    });
+
+    const data = await res.json();
+    return data.data;
+  } catch (error) {
+    console.error("Erro na action: ", error);
+    return { error: "erro inesperado", status: "ERROR" };
+  }
+}
+
+export async function deleteMateria(id: number): Promise<void> {
+  try {
+    // Verificar autenticação
+    const session = await getSession();
+    if (!session) {
+      throw new Error("Não autorizado. Faça login novamente.");
+    }
+
+    const res = await apiFetch(`/materias/${id}`, {
+      method: "DELETE",
     });
 
     if (!res.ok) {
       const errorData = await res.json();
-      console.error("Erro ao buscar curso:", errorData);
-      return {
-        error: errorData.message ?? "Erro ao buscar curso",
-        status: "ERROR",
-      };
+      throw new Error(errorData.mensagem || "Erro ao deletar matéria");
     }
 
-    const data = await res.json();
-    return data.data || data;
+    revalidatePath("/curso/cadastro");
   } catch (error) {
-    console.error("Erro na action getCourseById: ", error);
-    return { error: "erro inesperado", status: "ERROR" };
+    console.error("Erro na action: ", error);
+    throw new Error(getErrorMessage(error));
   }
 }

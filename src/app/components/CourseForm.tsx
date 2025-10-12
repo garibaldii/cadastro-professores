@@ -16,7 +16,9 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import z from "zod";
 import { createCourseSchema } from "@/lib/validation";
-import { Send } from "lucide-react";
+import { Send, Plus } from "lucide-react";
+import MateriaModal, { Materia } from "./MateriaModal";
+import MateriaList from "./MateriaList";
 
 const CourseForm = () => {
   const router = useRouter();
@@ -24,6 +26,11 @@ const CourseForm = () => {
 
   const [modelosCurso, setModelosCurso] = useState<string[]>();
   const [professors, setProfessors] = useState<Professor[]>();
+
+  // Estados para matérias
+  const [materias, setMaterias] = useState<Materia[]>([]);
+  const [isMateriaModalOpen, setIsMateriaModalOpen] = useState(false);
+  const [editingMateria, setEditingMateria] = useState<Materia | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -40,6 +47,37 @@ const CourseForm = () => {
     fetchData();
   }, []);
 
+  // Funções para gerenciar matérias
+  const handleAddMateria = (novaMateria: Omit<Materia, "id">) => {
+    setMaterias((prev) => [...prev, { ...novaMateria, id: Date.now() }]);
+  };
+
+  const handleUpdateMateria = (materiaAtualizada: Materia) => {
+    setMaterias((prev) =>
+      prev.map((m) => (m.id === materiaAtualizada.id ? materiaAtualizada : m))
+    );
+    setEditingMateria(null);
+  };
+
+  const handleRemoveMateria = (index: number) => {
+    setMaterias((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleEditMateria = (materia: Materia) => {
+    setEditingMateria(materia);
+    setIsMateriaModalOpen(true);
+  };
+
+  const handleOpenMateriaModal = () => {
+    setEditingMateria(null);
+    setIsMateriaModalOpen(true);
+  };
+
+  const handleCloseMateriaModal = () => {
+    setEditingMateria(null);
+    setIsMateriaModalOpen(false);
+  };
+
   const handleFormSubmit = async (prevState: unknown, formData: FormData) => {
     try {
       const formValues = {
@@ -48,6 +86,11 @@ const CourseForm = () => {
         sigla: formData.get("sigla") as string,
         modelo: formData.get("modelo") as string,
         coordenadorId: Number(formData.get("coordenadorId")),
+        materias: materias.map((m) => ({
+          nome: m.nome,
+          cargaHoraria: m.cargaHoraria,
+          professorId: m.professorId,
+        })),
       };
 
       await createCourseSchema.parseAsync(formValues);
@@ -188,10 +231,44 @@ const CourseForm = () => {
         )}
       </div>
 
+      {/* Seção de Matérias */}
+      <div className="border-t pt-6 mt-6">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold text-gray-700">
+            Matérias do Curso
+          </h3>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleOpenMateriaModal}
+            className="flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Adicionar Matéria
+          </Button>
+        </div>
+
+        <MateriaList
+          materias={materias}
+          onEditMateria={handleEditMateria}
+          onRemoveMateria={handleRemoveMateria}
+        />
+      </div>
+
       <Button className="w-full" type="submit" disabled={isLoading}>
         {isLoading ? "Cadastrando..." : "Cadastrar"}
         <Send className="size-6 ml-2" />
       </Button>
+
+      {/* Modal de Matérias */}
+      <MateriaModal
+        isOpen={isMateriaModalOpen}
+        onClose={handleCloseMateriaModal}
+        professors={professors || []}
+        onAddMateria={handleAddMateria}
+        editingMateria={editingMateria}
+        onUpdateMateria={handleUpdateMateria}
+      />
     </form>
   );
 };
