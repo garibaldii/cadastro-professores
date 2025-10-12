@@ -83,3 +83,25 @@ export const createCourseSchema = z.object({
         )
         .optional(),
 });
+
+// Matéria
+export const createMateriaSchema = z.object({
+    nome: z.string()
+        .min(1, "Nome é obrigatório")
+        .max(100, "Nome deve ter no máximo 100 caracteres"),
+    
+    cargaHoraria: z.coerce.number()
+        .int("Carga horária deve ser um número inteiro")
+        .min(1, "Carga horária deve ser maior que zero")
+        .max(1000, "Carga horária deve ser no máximo 1000 horas"),
+    
+    professorId: z.coerce.number()
+        .int("Professor deve ser selecionado")
+        .min(1, "Professor é obrigatório"),
+    
+    cursos: z.array(z.object({
+        cursoId: z.number().int("ID do curso deve ser um número inteiro")
+    })).optional()
+});
+
+export const updateMateriaSchema = createMateriaSchema.partial();

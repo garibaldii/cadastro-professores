@@ -15,7 +15,7 @@ export async function handleApiResponse<T>(
     if (!res.ok) {
       const errorData = await res.json();
       return {
-        error: errorData.message ?? errorData.erro ?? "Erro na operação",
+        error: errorData.mensagem ?? errorData.erro ?? "Erro na operação",
         status: "ERROR",
       };
     }
