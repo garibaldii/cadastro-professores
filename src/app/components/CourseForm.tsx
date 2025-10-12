@@ -26,7 +26,7 @@ const CourseForm = () => {
 
   const [modelosCurso, setModelosCurso] = useState<string[]>();
   const [professors, setProfessors] = useState<Professor[]>();
-  
+
   // Estados para matérias
   const [materias, setMaterias] = useState<Materia[]>([]);
   const [isMateriaModalOpen, setIsMateriaModalOpen] = useState(false);
@@ -49,18 +49,18 @@ const CourseForm = () => {
 
   // Funções para gerenciar matérias
   const handleAddMateria = (novaMateria: Omit<Materia, "id">) => {
-    setMaterias(prev => [...prev, { ...novaMateria, id: Date.now() }]);
+    setMaterias((prev) => [...prev, { ...novaMateria, id: Date.now() }]);
   };
 
   const handleUpdateMateria = (materiaAtualizada: Materia) => {
-    setMaterias(prev => 
-      prev.map(m => m.id === materiaAtualizada.id ? materiaAtualizada : m)
+    setMaterias((prev) =>
+      prev.map((m) => (m.id === materiaAtualizada.id ? materiaAtualizada : m))
     );
     setEditingMateria(null);
   };
 
   const handleRemoveMateria = (index: number) => {
-    setMaterias(prev => prev.filter((_, i) => i !== index));
+    setMaterias((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleEditMateria = (materia: Materia) => {
@@ -86,11 +86,11 @@ const CourseForm = () => {
         sigla: formData.get("sigla") as string,
         modelo: formData.get("modelo") as string,
         coordenadorId: Number(formData.get("coordenadorId")),
-        materias: materias.map(m => ({
+        materias: materias.map((m) => ({
           nome: m.nome,
           cargaHoraria: m.cargaHoraria,
-          professorId: m.professorId
-        }))
+          professorId: m.professorId,
+        })),
       };
 
       await createCourseSchema.parseAsync(formValues);

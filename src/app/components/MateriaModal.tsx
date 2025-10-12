@@ -63,7 +63,9 @@ const MateriaModal = ({
 
       await createMateriaSchema.omit({ cursos: true }).parseAsync(formValues);
 
-      const selectedProfessor = professors.find(p => p.id === formValues.professorId);
+      const selectedProfessor = professors.find(
+        (p) => p.id === formValues.professorId
+      );
 
       const materia: Materia = {
         ...formValues,

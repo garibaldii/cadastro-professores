@@ -75,41 +75,52 @@ const CourseEditSheet = ({ data, onUpdateFn }: CourseEditSheetProps) => {
           setSelectedModelo(c.modelo);
         }
         setMaterias([]);
-        
+
         if (c?.materias && Array.isArray(c.materias) && c.materias.length > 0) {
-          
           try {
             const materiasFormatadas: Materia[] = c.materias
-              .filter((relacionamento: unknown) => relacionamento !== null && relacionamento !== undefined)
+              .filter(
+                (relacionamento: unknown) =>
+                  relacionamento !== null && relacionamento !== undefined
+              )
               .map((relacionamento: unknown) => {
-
                 const rel = relacionamento as Record<string, unknown>;
-                
+
                 const materiaData = rel.materia as Record<string, unknown>;
-                
+
                 if (!materiaData) {
-                  console.warn("Dados da matéria não encontrados no relacionamento");
+                  console.warn(
+                    "Dados da matéria não encontrados no relacionamento"
+                  );
                   return null;
                 }
-                                
+
                 // Buscar professor
                 const professorId = materiaData.professorId as number;
-                const professor = (p || []).find((prof: Professor) => 
-                  prof.id === professorId
-                ) || (materiaData.professor as Professor);
-                
+                const professor =
+                  (p || []).find(
+                    (prof: Professor) => prof.id === professorId
+                  ) || (materiaData.professor as Professor);
+
                 const materiaFormatada = {
                   id: materiaData.id as number,
                   nome: materiaData.nome as string,
                   cargaHoraria: materiaData.cargaHoraria as number,
                   professorId: professorId,
-                  professor: professor
+                  professor: professor,
                 };
-                
+
                 return materiaFormatada;
               })
-              .filter((m: Materia | null) => m !== null && m.id && m.nome && m.cargaHoraria && m.professorId) as Materia[];
-            
+              .filter(
+                (m: Materia | null) =>
+                  m !== null &&
+                  m.id &&
+                  m.nome &&
+                  m.cargaHoraria &&
+                  m.professorId
+              ) as Materia[];
+
             setMaterias(materiasFormatadas);
           } catch (error) {
             console.error("Erro ao processar matérias:", error);
@@ -231,125 +242,128 @@ const CourseEditSheet = ({ data, onUpdateFn }: CourseEditSheetProps) => {
           {course ? (
             <form action={formAction} className="cadastro-form !shadow-none">
               <div className="grid flex-1 auto-rows-min gap-6 px-4 pb-6">
-              <div className="flex w-full">
-                <div className="w-11/12 mr-3">
-                  <label htmlFor="nome" className="cadastro-form_label">
-                    Nome
-                  </label>
-                  <Input
-                    id="nome"
-                    name="nome"
-                    required
-                    defaultValue={course?.nome}
-                  />
+                <div className="flex w-full">
+                  <div className="w-11/12 mr-3">
+                    <label htmlFor="nome" className="cadastro-form_label">
+                      Nome
+                    </label>
+                    <Input
+                      id="nome"
+                      name="nome"
+                      required
+                      defaultValue={course?.nome}
+                    />
+                  </div>
+
+                  <div className="mr-3">
+                    <label htmlFor="sigla" className="cadastro-form_label">
+                      Sigla
+                    </label>
+                    <Input
+                      id="sigla"
+                      name="sigla"
+                      required
+                      maxLength={4}
+                      defaultValue={course?.sigla}
+                    />
+                  </div>
                 </div>
 
-                <div className="mr-3">
-                  <label htmlFor="sigla" className="cadastro-form_label">
-                    Sigla
+                <div className="">
+                  <label htmlFor="codigo" className="cadastro-form_label">
+                    Código
                   </label>
                   <Input
-                    id="sigla"
-                    name="sigla"
+                    id="codigo"
+                    type="text"
                     required
+                    inputMode="numeric"
                     maxLength={4}
-                    defaultValue={course?.sigla}
+                    name="codigo"
+                    defaultValue={course?.codigo}
+                    onInput={(e) => {
+                      const target = e.target as HTMLInputElement;
+                      target.value = target.value.replace(/\D/g, ""); // remove tudo que não for número
+                    }}
                   />
                 </div>
-              </div>
 
-              <div className="">
-                <label htmlFor="codigo" className="cadastro-form_label">
-                  Código
-                </label>
-                <Input
-                  id="codigo"
-                  type="text"
-                  required
-                  inputMode="numeric"
-                  maxLength={4}
-                  name="codigo"
-                  defaultValue={course?.codigo}
-                  onInput={(e) => {
-                    const target = e.target as HTMLInputElement;
-                    target.value = target.value.replace(/\D/g, ""); // remove tudo que não for número
-                  }}
-                />
-              </div>
-
-              <div>
-                <label htmlFor="modelo" className="cadastro-form_label">
-                  Modelo
-                </label>
-                <Select
-                  name="modelo"
-                  value={selectedModelo}
-                  onValueChange={setSelectedModelo}
-                  required
-                >
-                  <SelectTrigger className="cadastro-form_select !w-full">
-                    <SelectValue placeholder="Selecionar o modelo de ensino" />
-                  </SelectTrigger>
-
-                  <SelectContent>
-                    {/* consumir os valores do endpoint de titulacao da api */}
-                    {modelosCurso?.map((item, index) => (
-                      <SelectItem value={item} key={index}>
-                        {item}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label htmlFor="coordenadorId" className="cadastro-form_label">
-                  Coordenador
-                </label>
-                <Select
-                  name="coordenadorId"
-                  value={selectedProfessorId}
-                  onValueChange={setSelectedProfessorId}
-                  required
-                >
-                  <SelectTrigger className="cadastro-form_select !w-full">
-                    <SelectValue placeholder="Selecionar o coordenador"></SelectValue>
-                  </SelectTrigger>
-
-                  <SelectContent>
-                    {professors?.map((prof) => (
-                      <SelectItem key={prof?.id} value={String(prof.id)}>
-                        {prof.nome}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Seção de Matérias */}
-              <div className="border-t pt-6 mt-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h4 className="text-lg font-semibold text-gray-700">
-                    Matérias do Curso
-                  </h4>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleOpenMateriaModal}
-                    className="flex items-center gap-2"
-                    size="sm"
+                <div>
+                  <label htmlFor="modelo" className="cadastro-form_label">
+                    Modelo
+                  </label>
+                  <Select
+                    name="modelo"
+                    value={selectedModelo}
+                    onValueChange={setSelectedModelo}
+                    required
                   >
-                    <Plus className="w-4 h-4" />
-                    Adicionar
-                  </Button>
+                    <SelectTrigger className="cadastro-form_select !w-full">
+                      <SelectValue placeholder="Selecionar o modelo de ensino" />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      {/* consumir os valores do endpoint de titulacao da api */}
+                      {modelosCurso?.map((item, index) => (
+                        <SelectItem value={item} key={index}>
+                          {item}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
-                <MateriaList
-                  materias={materias}
-                  onEditMateria={handleEditMateria}
-                  onRemoveMateria={handleRemoveMateria}
-                />
-              </div>
+                <div>
+                  <label
+                    htmlFor="coordenadorId"
+                    className="cadastro-form_label"
+                  >
+                    Coordenador
+                  </label>
+                  <Select
+                    name="coordenadorId"
+                    value={selectedProfessorId}
+                    onValueChange={setSelectedProfessorId}
+                    required
+                  >
+                    <SelectTrigger className="cadastro-form_select !w-full">
+                      <SelectValue placeholder="Selecionar o coordenador"></SelectValue>
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      {professors?.map((prof) => (
+                        <SelectItem key={prof?.id} value={String(prof.id)}>
+                          {prof.nome}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Seção de Matérias */}
+                <div className="border-t pt-6 mt-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h4 className="text-lg font-semibold text-gray-700">
+                      Matérias do Curso
+                    </h4>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleOpenMateriaModal}
+                      className="flex items-center gap-2"
+                      size="sm"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Adicionar
+                    </Button>
+                  </div>
+
+                  <MateriaList
+                    materias={materias}
+                    onEditMateria={handleEditMateria}
+                    onRemoveMateria={handleRemoveMateria}
+                  />
+                </div>
 
                 <Button>{isLoading ? "Atualizando..." : "Atualizar"}</Button>
               </div>

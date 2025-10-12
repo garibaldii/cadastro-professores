@@ -19,7 +19,9 @@ const MateriaList = ({
     return (
       <div className="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center">
         <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-        <p className="text-gray-500 text-lg">Nenhuma matéria adicionada ainda</p>
+        <p className="text-gray-500 text-lg">
+          Nenhuma matéria adicionada ainda
+        </p>
         <p className="text-gray-400 text-sm mt-2">
           Clique no botão &ldquo;Adicionar Matéria&rdquo; para começar
         </p>
@@ -32,7 +34,7 @@ const MateriaList = ({
       <h3 className="font-semibold text-lg text-gray-700 mb-3">
         Matérias do Curso ({materias.length})
       </h3>
-      
+
       {materias.map((materia, index) => (
         <div
           key={index}
@@ -55,7 +57,7 @@ const MateriaList = ({
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex gap-2 ml-4">
                 <Button
                   type="button"
@@ -66,7 +68,7 @@ const MateriaList = ({
                 >
                   <Edit2 className="w-4 h-4" />
                 </Button>
-                
+
                 <Button
                   type="button"
                   size="sm"
