@@ -58,9 +58,9 @@ const Navbar = async () => {
                   <span>{session.nome}</span>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem>
+                  {/* <DropdownMenuItem>
                     <Link href={`/usuario/${session.id}`}>Meu Perfil</Link>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
 
                   <DropdownMenuItem>
                     <form
