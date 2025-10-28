@@ -1,28 +1,41 @@
+
+
 import React from "react";
 
 import { profColumns, Professor } from "./columns";
 import { DataTable } from "../../../components/data-table";
 import { getProfessors } from "@/lib/actions/index";
+import { RelatoryActions } from "@/app/components/RelatoryAction";
 
-// Página dinâmica devido ao uso de cookies para autenticação
 export const dynamic = "force-dynamic";
 
 async function RelatorioProfessor() {
   const professors: Professor[] = await getProfessors();
 
+  // Define colunas que quer exportar
+    const selectedColumns = [
+    "nome",
+    "email",
+    "titulacao",
+    "idUnidade",
+    "referencia",
+    "statusAtividade",
+  ];
+
   return (
-    <div className="px-12 py-8 pt-[5%]">
+    <div className="px-12 py-8 pt-[5%] space-y-6">
+
+      <RelatoryActions
+        title="Relatório de Professores"
+        data={professors}
+        selectedColumns={selectedColumns}
+        type="professor"
+      />
+
       <DataTable
         columns={profColumns}
         data={professors}
-        searchFields={[
-          "nome",
-          "email",
-          "titulacao",
-          "idUnidade",
-          "referencia",
-          "statusAtividade",
-        ]}
+        searchFields={selectedColumns}
       />
     </div>
   );
