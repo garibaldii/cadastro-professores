@@ -7,14 +7,14 @@ const professorLabels: Record<string, string> = {
   titulacao: "Titulação",
   idUnidade: "Unidade",
   referencia: "Referência",
-  statusAtividade: "Status"
+  statusAtividade: "Status",
 };
 
 const courseLabels: Record<string, string> = {
   nome: "Curso",
   codigo: "Código",
   coordenador: "Coordenador",
-  cargaHoraria: "Carga Horária"
+  cargaHoraria: "Carga Horária",
 };
 
 export const HeaderHtml = async () => {
@@ -41,7 +41,9 @@ export const HeaderHtml = async () => {
           justify-content: center;
           padding-left: 10px;
         ">
-          <p style="margin: 0; font-weight: bold; font-size: 14px;">${session?.nome ?? ""}</p>
+          <p style="margin: 0; font-weight: bold; font-size: 14px;">${
+            session?.nome ?? ""
+          }</p>
           <p style="margin: 2px 0; font-weight: semibold;">Administração Geral</p>
           <p style="margin: 2px 0;">Centro Paula Souza</p>
           <p style="margin: 2px 0;">
@@ -63,36 +65,52 @@ export const HeaderHtml = async () => {
   `;
 };
 
-export const professorContent = (data: Record<string, unknown>[], headers: string[]) => `
+export const professorContent = (
+  data: Record<string, unknown>[],
+  headers: string[]
+) => `
   <table>
     <thead>
       <tr>
-        ${headers.map(key => `<th>${professorLabels[key] ?? key}</th>`).join("")}
+        ${headers
+          .map((key) => `<th>${professorLabels[key] ?? key}</th>`)
+          .join("")}
       </tr>
     </thead>
     <tbody>
-      ${data.map(row => `
+      ${data
+        .map(
+          (row) => `
         <tr>
-          ${headers.map(key => `<td>${row[key] ?? ""}</td>`).join("")}
+          ${headers.map((key) => `<td>${row[key] ?? ""}</td>`).join("")}
         </tr>
-      `).join("")}
+      `
+        )
+        .join("")}
     </tbody>
   </table>
 `;
 
-export const courseContent = (data: Record<string, unknown>[], headers: string[]) => `
+export const courseContent = (
+  data: Record<string, unknown>[],
+  headers: string[]
+) => `
   <table>
     <thead>
       <tr>
-        ${headers.map(key => `<th>${courseLabels[key] ?? key}</th>`).join("")}
+        ${headers.map((key) => `<th>${courseLabels[key] ?? key}</th>`).join("")}
       </tr>
     </thead>
     <tbody>
-      ${data.map(row => `
+      ${data
+        .map(
+          (row) => `
         <tr>
-          ${headers.map(key => `<td>${row[key] ?? ""}</td>`).join("")}
+          ${headers.map((key) => `<td>${row[key] ?? ""}</td>`).join("")}
         </tr>
-      `).join("")}
+      `
+        )
+        .join("")}
     </tbody>
   </table>
 `;
