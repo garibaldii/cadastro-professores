@@ -8,9 +8,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface ActionCellProps {
-  data: { id: number };
-  onDeleteFn: (id: number) => Promise<void>;
-  onUpdateFn?: (id: number) => Promise<void>;
+  data: { id: string | number };
+  onDeleteFn: (id: string | number) => Promise<void>;
+  onUpdateFn?: (id: string | number) => Promise<void>;
   type: EnumType;
 }
 
@@ -23,7 +23,7 @@ export default function ActionCell({
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string | number) => {
     if (isDeleting) return;
 
     setIsDeleting(true);
@@ -44,7 +44,7 @@ export default function ActionCell({
     }
   };
 
-  const handleUpdate = async (id: number) => {
+  const handleUpdate = async (id: string | number) => {
     if (onUpdateFn) {
       try {
         await onUpdateFn(id);

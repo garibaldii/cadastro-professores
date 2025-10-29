@@ -36,7 +36,7 @@ export async function saveCourse(
   }
 }
 
-export async function deleteCourse(id: number): Promise<void> {
+export async function deleteCourse(id: string | number): Promise<void> {
   try {
     // Verificar autenticação
     const session = await getSession();
@@ -61,7 +61,7 @@ export async function deleteCourse(id: number): Promise<void> {
 }
 
 export async function updateCourse(
-  id: number,
+  id: string | number,
   body: Record<string, unknown>
 ): Promise<ActionResponse> {
   try {
@@ -123,7 +123,7 @@ export async function getCourses() {
   }
 }
 
-export async function getCourseById(id: number) {
+export async function getCourseById(id: string | number) {
   try {
     // Verificar autenticação
     const session = await getSession();

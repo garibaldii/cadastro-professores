@@ -27,7 +27,7 @@ export interface Materia {
   id?: number;
   nome: string;
   cargaHoraria: number;
-  professorId: number;
+  professorId: string;
   professor?: Professor;
 }
 
@@ -58,7 +58,7 @@ const MateriaModal = ({
       const formValues = {
         nome: formData.get("nome") as string,
         cargaHoraria: Number(formData.get("cargaHoraria")),
-        professorId: Number(formData.get("professorId")),
+        professorId: formData.get("professorId") as string,
       };
 
       await createMateriaSchema.omit({ cursos: true }).parseAsync(formValues);
@@ -108,6 +108,8 @@ const MateriaModal = ({
     setSelectedProfessorId(editingMateria?.professorId?.toString() || "");
     onClose();
   };
+
+  console.log("professores:", professors);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>

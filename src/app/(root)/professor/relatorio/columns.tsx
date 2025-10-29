@@ -6,7 +6,7 @@ import { deleteProfessor } from "@/lib/actions/index";
 import { ColumnDef } from "@tanstack/react-table";
 
 export type Professor = {
-  id: number;
+  id: string;
   nome: string;
   email: string;
   titulacao: string;

@@ -32,8 +32,8 @@ import { Loader2 } from "lucide-react";
 import { updateProfessorSchema } from "@/lib/validation";
 
 interface ProfessorEditSheetProps {
-  data: { id: number };
-  onUpdateFn?: (id: number) => Promise<void>;
+  data: { id: string | number };
+  onUpdateFn?: (id: string | number) => Promise<void>;
 }
 
 const ProfessorEditSheet = ({ data, onUpdateFn }: ProfessorEditSheetProps) => {

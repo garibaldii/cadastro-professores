@@ -71,7 +71,7 @@ export const createCourseSchema = z.object({
     error: () => ({ message: "Modelo inválido" }),
   }),
 
-  coordenadorId: z.number().int("CoordenadorId deve ser um número inteiro"),
+  coordenadorId: z.string().min(1, "Coordenador é obrigatório"),
 
   materias: z
     .array(
@@ -82,7 +82,7 @@ export const createCourseSchema = z.object({
         cargaHoraria: z
           .number()
           .int("Carga horária deve ser um número inteiro"),
-        professorId: z.number().int("ProfessorId deve ser um número inteiro"),
+        professorId: z.string().min(1, "ProfessorId é obrigatório"),
       })
     )
     .optional(),
@@ -101,10 +101,7 @@ export const createMateriaSchema = z.object({
     .min(1, "Carga horária deve ser maior que zero")
     .max(1000, "Carga horária deve ser no máximo 1000 horas"),
 
-  professorId: z.coerce
-    .number()
-    .int("Professor deve ser selecionado")
-    .min(1, "Professor é obrigatório"),
+  professorId: z.string().min(1, "Professor é obrigatório"),
 
   cursos: z
     .array(

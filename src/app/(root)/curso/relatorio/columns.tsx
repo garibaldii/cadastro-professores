@@ -7,7 +7,7 @@ import { deleteCourse } from "@/lib/actions/index";
 import EnumType from "@/app/components/EnumType";
 
 export type Course = {
-  id: number;
+  id: string;
   nome: string;
   codigo: string;
   sigla: string;

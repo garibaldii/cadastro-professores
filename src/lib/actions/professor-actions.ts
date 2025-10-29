@@ -37,7 +37,7 @@ export async function saveProfessor(form: FormData): Promise<ActionResponse> {
 }
 
 export async function updateProfessor(
-  id: number,
+  id: string | number,
   form: FormData
 ): Promise<ActionResponse> {
   try {
@@ -102,7 +102,7 @@ export async function getProfessors() {
   }
 }
 
-export async function getProfessorById(id: number) {
+export async function getProfessorById(id: string | number) {
   try {
     // Verificar autenticação
     const session = await getSession();
@@ -125,7 +125,7 @@ export async function getProfessorById(id: number) {
   }
 }
 
-export async function deleteProfessor(id: number): Promise<void> {
+export async function deleteProfessor(id: string | number): Promise<void> {
   try {
     // Verificar autenticação
     const session = await getSession();

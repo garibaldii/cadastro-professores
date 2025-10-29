@@ -30,8 +30,8 @@ import MateriaModal, { Materia } from "./MateriaModal";
 import MateriaList from "./MateriaList";
 
 interface CourseEditSheetProps {
-  data: { id: number };
-  onUpdateFn?: (id: number) => Promise<void>;
+  data: { id: string | number };
+  onUpdateFn?: (id: string | number) => Promise<void>;
 }
 
 const CourseEditSheet = ({ data, onUpdateFn }: CourseEditSheetProps) => {
@@ -96,7 +96,7 @@ const CourseEditSheet = ({ data, onUpdateFn }: CourseEditSheetProps) => {
                 }
 
                 // Buscar professor
-                const professorId = materiaData.professorId as number;
+                const professorId = materiaData.professorId as string;
                 const professor =
                   (p || []).find(
                     (prof: Professor) => prof.id === professorId
@@ -173,7 +173,7 @@ const CourseEditSheet = ({ data, onUpdateFn }: CourseEditSheetProps) => {
         codigo: formData.get("codigo") as string,
         sigla: formData.get("sigla") as string,
         modelo: formData.get("modelo") as string,
-        coordenadorId: Number(formData.get("coordenadorId")),
+        coordenadorId: formData.get("coordenadorId") as string,
         materias: materias.map((m) => ({
           nome: m.nome,
           cargaHoraria: m.cargaHoraria,

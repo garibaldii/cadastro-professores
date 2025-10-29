@@ -85,7 +85,7 @@ const CourseForm = () => {
         codigo: formData.get("codigo") as string,
         sigla: formData.get("sigla") as string,
         modelo: formData.get("modelo") as string,
-        coordenadorId: Number(formData.get("coordenadorId")),
+        coordenadorId: formData.get("coordenadorId") as string,
         materias: materias.map((m) => ({
           nome: m.nome,
           cargaHoraria: m.cargaHoraria,
