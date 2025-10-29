@@ -3,7 +3,7 @@
 import ProfessorForm from "@/app/components/ProfessorForm";
 import ImportModal from "@/app/components/ImportCSVModal";
 import { Button } from "@/components/ui/button";
-import { FileText, FileSpreadsheet } from "lucide-react";
+import { FileSpreadsheet } from "lucide-react";
 import React, { useState } from "react";
 
 // Página dinâmica devido ao middleware de autenticação

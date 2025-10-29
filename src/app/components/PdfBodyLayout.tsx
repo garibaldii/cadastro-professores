@@ -1,7 +1,7 @@
 import { HeaderHtml, professorContent, courseContent } from "./PdfHeaderLayout";
 
 export const shareDataToPdfFile = async (
-  data: any[],
+  data: Record<string, unknown>[],
   type: "professor" | "course",
   selectedColumns: string[]
 ) => {

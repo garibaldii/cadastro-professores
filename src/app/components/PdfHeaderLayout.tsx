@@ -63,7 +63,7 @@ export const HeaderHtml = async () => {
   `;
 };
 
-export const professorContent = (data: any[], headers: string[]) => `
+export const professorContent = (data: Record<string, unknown>[], headers: string[]) => `
   <table>
     <thead>
       <tr>
@@ -80,7 +80,7 @@ export const professorContent = (data: any[], headers: string[]) => `
   </table>
 `;
 
-export const courseContent = (data: any[], headers: string[]) => `
+export const courseContent = (data: Record<string, unknown>[], headers: string[]) => `
   <table>
     <thead>
       <tr>

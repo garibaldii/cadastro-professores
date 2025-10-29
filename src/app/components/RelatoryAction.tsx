@@ -6,9 +6,9 @@ import { shareDataToPdfFile } from "@/app/components/PdfBodyLayout";
 
 type RelatoryActionsProps = {
   title: string;
-  data: any[];
+  data: Record<string, unknown>[];
   type: "professor" | "course";
-  selectedColumns: any[];
+  selectedColumns: string[];
 };
 
 export const RelatoryActions = ({
