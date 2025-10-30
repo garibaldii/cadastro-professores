@@ -19,7 +19,7 @@ const courseLabels: Record<string, string> = {
 
 export const HeaderHtml = async () => {
   const session = await getSession();
-  const imgSrc = `http://localhost:3000/static/cabecalho.png`;
+  const imgSrc = `http://72.61.33.18:3000/static/cabecalho.png`;
 
   return `
     <header style="margin-bottom: 16px;">
