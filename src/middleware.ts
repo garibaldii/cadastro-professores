@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { jwtDecode } from "jwt-decode";
 
 interface DecodedToken {
-  userId: string;
-  userName: string;
-  email: string;
-  exp: number;
+  userId?: string;
+  userName?: string;
+  email?: string;
+  role?: string;
+  roles?: string[];
+  exp?: number;
 }
 
-// Rotas que não precisam de autenticação
 const publicRoutes = ["/login", "/registro", "/esqueceu-senha", "/api/auth"];
 
 // Rotas que precisam de autenticação (para referência/documentação)
@@ -19,12 +20,21 @@ const publicRoutes = ["/login", "/registro", "/esqueceu-senha", "/api/auth"];
 //   '/', // página inicial também precisa de auth
 // ];
 
+const adminRoutes = ["/admin"];
+
+function norm(s: string): string {
+  return s.toUpperCase().replace(/[\s_\-]/g, "");
+}
+
+// Papéis válidos
+const SA = new Set(["SUPERADMIN", "SUPERADM", "SUPERADMINISTRATOR"]);
+const ADMIN = new Set(["ADMIN", "ADM", ...SA]);
+
 function isPublicRoute(pathname: string): boolean {
   return publicRoutes.some((route) => pathname.startsWith(route));
 }
 
 function isProtectedRoute(pathname: string): boolean {
-  // Se não é uma rota pública e não é um arquivo estático
   return (
     !isPublicRoute(pathname) &&
     !pathname.startsWith("/_next") &&
@@ -34,47 +44,48 @@ function isProtectedRoute(pathname: string): boolean {
   );
 }
 
-function isTokenValid(token: string): boolean {
+function decodeToken(token: string): DecodedToken | null {
   try {
-    const decoded = jwtDecode<DecodedToken>(token);
-    const currentTime = Date.now() / 1000;
-
-    // Verifica se o token não expirou
-    return decoded.exp > currentTime;
-  } catch (error) {
-    console.error("Erro ao validar token:", error);
-    return false;
+    return jwtDecode<DecodedToken>(token);
+  } catch {
+    return null;
   }
+}
+
+function isTokenValid(token: string): boolean {
+  const decoded = decodeToken(token);
+  return !!decoded?.exp && decoded.exp > Date.now() / 1000;
+}
+
+function hasAnyRole(decoded: DecodedToken | null, roles: Set<string>): boolean {
+  if (!decoded) return false;
+  const raw = decoded.roles ?? (decoded.role ? [decoded.role] : []);
+  return raw.map(norm).some((r) => roles.has(r));
 }
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const token = request.cookies.get("token")?.value;
+  const token = request.cookies.get("token")?.value ?? null;
+  const decoded = token ? decodeToken(token) : null;
 
-  // Se está tentando acessar uma rota protegida
+  // ⚠️ Se já estiver logado e tentar acessar rota pública (login/registro)
+  if (isPublicRoute(pathname) && token && isTokenValid(token)) {
+    const redirectTo = request.nextUrl.searchParams.get("redirect") || "/";
+    return NextResponse.redirect(new URL(redirectTo, request.url));
+  }
+
+  // 🔒 Controle de acesso
   if (isProtectedRoute(pathname)) {
-    // Se não tem token ou token é inválido, redireciona para login
     if (!token || !isTokenValid(token)) {
       const loginUrl = new URL("/login", request.url);
-      // Adiciona a URL de destino como parâmetro para redirecionamento após login
       loginUrl.searchParams.set("redirect", pathname);
 
-      // Cria resposta de redirecionamento
       const response = NextResponse.redirect(loginUrl);
+      const expired = token && !isTokenValid(token);
 
-      // Define cookie com mensagem de erro para exibir toast
-      let errorMessage = "Você precisa fazer login para acessar esta página.";
-
-      if (token && !isTokenValid(token)) {
-        errorMessage = "Sua sessão expirou. Faça login novamente.";
-      }
-
-      // Personaliza a mensagem baseada na rota acessada
-      if (pathname.startsWith("/professor")) {
-        errorMessage += " Área de professores requer autenticação.";
-      } else if (pathname.startsWith("/curso")) {
-        errorMessage += " Área de cursos requer autenticação.";
-      }
+      const errorMessage = expired
+        ? "Sua sessão expirou. Faça login novamente."
+        : "Você precisa fazer login para acessar esta página.";
 
       response.cookies.set("auth-error", errorMessage, {
         httpOnly: false,
@@ -85,27 +96,27 @@ export function middleware(request: NextRequest) {
 
       return response;
     }
+
+    // 🔐 Bloqueia acesso a /admin para não-admins
+    if (adminRoutes.some((r) => pathname.startsWith(r)) && !hasAnyRole(decoded, ADMIN)) {
+      const home = new URL("/", request.url);
+      const response = NextResponse.redirect(home);
+      response.cookies.set("auth-error", "Acesso restrito a administradores.", {
+        httpOnly: false,
+        maxAge: 60,
+        path: "/",
+        sameSite: "lax",
+      });
+      return response;
+    }
   }
 
-  // Se está autenticado e tentando acessar página de login/registro
-  if (isPublicRoute(pathname) && token && isTokenValid(token)) {
-    // Se tem parâmetro redirect, usa ele; senão vai para página inicial
-    const redirectTo = request.nextUrl.searchParams.get("redirect") || "/";
-    return NextResponse.redirect(new URL(redirectTo, request.url));
-  }
-
+  // ✅ Caso contrário, segue o fluxo normal
   return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
     "/((?!api|_next/static|_next/image|favicon.ico).*)",
   ],
 };

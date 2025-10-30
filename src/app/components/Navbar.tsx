@@ -10,8 +10,29 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { getSession, logout } from "@/lib/actions/index";
 
+// --- adição mínima: helpers de papel ---
+function norm(s: string): string {
+  return s.toUpperCase().replace(/[\s_\-]/g, "");
+}
+const SA = new Set(["SUPERADMIN", "SUPERADM", "SUPERADMINISTRATOR"]);
+const ADMIN = new Set(["ADMIN", "ADM", ...SA]);
+
+function isAdminOrSuper(session: {
+  role?: string;
+  roles?: string[];
+} | null): boolean {
+  if (!session) return false;
+  const raw = [
+    ...(Array.isArray(session.roles) ? session.roles : []),
+    ...(session.role ? [session.role] : []),
+  ];
+  return raw.map(norm).some((r) => ADMIN.has(r));
+}
+// --- fim da adição mínima ---
+
 const Navbar = async () => {
   const session = await getSession();
+  const canSeeMonitores = isAdminOrSuper(session);
 
   return (
     <header className="px-5 py-3 bg-gray-50 shadow-sm font-work-sans text-gray-800 border-b border-gray-200">
@@ -23,6 +44,7 @@ const Navbar = async () => {
         <div className="flex items-center gap-5">
           {session && session.id ? (
             <>
+              {/* Professores */}
               <DropdownMenu>
                 <DropdownMenuTrigger className="text-black-400 hover:text-rose-500 cursor-pointer transition-colors duration-200 font-medium">
                   Professores
@@ -31,13 +53,13 @@ const Navbar = async () => {
                   <DropdownMenuItem>
                     <Link href={"/professor/cadastro"}>Cadastro</Link>
                   </DropdownMenuItem>
-
                   <DropdownMenuItem>
                     <Link href={"/professor/relatorio"}>Relatório</Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
+              {/* Cursos */}
               <DropdownMenu>
                 <DropdownMenuTrigger className="text-black-400 hover:text-rose-500 cursor-pointer transition-colors duration-200 font-medium">
                   Cursos
@@ -46,22 +68,28 @@ const Navbar = async () => {
                   <DropdownMenuItem>
                     <Link href={"/curso/cadastro"}>Cadastro</Link>
                   </DropdownMenuItem>
-
                   <DropdownMenuItem>
                     <Link href={"/curso/relatorio"}>Relatório</Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
+              {/* Monitores — NOVO: aparece para ADMIN e SUPER_ADMIN */}
+              {canSeeMonitores && (
+                <Link
+                  href="/admin/monitores"
+                  className="text-black-400 hover:text-rose-500 cursor-pointer transition-colors duration-200 font-medium"
+                >
+                  Monitores
+                </Link>
+              )}
+
+              {/* Usuário */}
               <DropdownMenu>
                 <DropdownMenuTrigger className="text-black-400 hover:text-rose-500 cursor-pointer transition-colors duration-200 font-medium">
                   <span>{session.nome}</span>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  {/* <DropdownMenuItem>
-                    <Link href={`/usuario/${session.id}`}>Meu Perfil</Link>
-                  </DropdownMenuItem> */}
-
                   <DropdownMenuItem>
                     <form
                       action={async () => {
@@ -79,13 +107,6 @@ const Navbar = async () => {
               </DropdownMenu>
             </>
           ) : (
-            // <form action={async () => {
-            //     "use server"
-
-            //     await signIn('github')
-            // }}>
-            //     <button type="submit">Login</button>
-            // </form>
             <Link
               href={"/login"}
               className="text-rose-400 hover:text-rose-500 cursor-pointer transition-colors duration-200 font-medium"
