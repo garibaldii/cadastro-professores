@@ -13,7 +13,11 @@ function norm(s: string): string {
   return s.toUpperCase().replace(/[\s_\-]/g, "");
 }
 
-const SUPERADM_ROLES = new Set(["SUPERADMIN", "SUPERADM", "SUPERADMINISTRATOR"]);
+const SUPERADM_ROLES = new Set([
+  "SUPERADMIN",
+  "SUPERADM",
+  "SUPERADMINISTRATOR",
+]);
 
 interface DecodedToken {
   role?: string;
@@ -44,13 +48,19 @@ function isSuper(decoded: DecodedToken | null): boolean {
   return roles.map(norm).some((r) => SUPERADM_ROLES.has(r));
 }
 
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(
+  _req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const params = await context.params;
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
-  if (!token) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  if (!token)
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const decoded = decodeJwt(token);
-  if (!isSuper(decoded)) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+  if (!isSuper(decoded))
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
 
   const url = `${getApiBase()}/monitores/${params.id}`;
   const res = await fetch(url, {
@@ -61,14 +71,21 @@ export async function DELETE(_req: Request, { params }: { params: { id: string }
 
   if (res.status === 204) return NextResponse.json({}, { status: 204 });
 
-  const body = (await res.json().catch(() => ({ message: "Empty or invalid JSON" }))) as ApiResponseBody;
+  const body = (await res
+    .json()
+    .catch(() => ({ message: "Empty or invalid JSON" }))) as ApiResponseBody;
   return NextResponse.json(body, { status: res.status });
 }
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(
+  _req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const params = await context.params;
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
-  if (!token) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  if (!token)
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const url = `${getApiBase()}/monitores/${params.id}`;
   const res = await fetch(url, {
@@ -76,7 +93,9 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
     cache: "no-store",
   });
 
-  const body = (await res.json().catch(() => ({ message: "Empty or invalid JSON" }))) as ApiResponseBody;
+  const body = (await res
+    .json()
+    .catch(() => ({ message: "Empty or invalid JSON" }))) as ApiResponseBody;
   return NextResponse.json(body, { status: res.status });
 }
 
