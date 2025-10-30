@@ -28,7 +28,18 @@ interface Professor {
 }
 
 export default async function Home() {
-  const professors: Professor[] = await getProfessors();
+  const professorsData = await getProfessors();
+
+  let professors: Professor[] = [];
+  if (Array.isArray(professorsData)) {
+    professors = professorsData;
+  } else if (
+    professorsData &&
+    typeof professorsData === "object" &&
+    "data" in professorsData
+  ) {
+    professors = Array.isArray(professorsData.data) ? professorsData.data : [];
+  }
 
   // Agrupa professores por titulação
   const titulacaoCount = professors.reduce((acc, professor) => {
