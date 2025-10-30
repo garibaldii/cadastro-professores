@@ -78,22 +78,28 @@ const Registro = () => {
   });
 
   return (
-    <form className="cadastro-form !p-10 rounded-lg  w-1/3" action={formAction}>
-      <header className="flex justify-center">
+    <form
+      className="cadastro-form !p-10 rounded-lg w-full max-w-md mx-4"
+      action={formAction}
+    >
+      <header className="flex justify-center mb-2">
         <Image src="/logo.png" alt="logo" width={150} height={30} />
       </header>
 
-      <hr />
+      <hr className="my-4" />
 
-      <div className="flex justify-center">
+      <div className="flex justify-center text-sm mb-6">
         <span>Já possui uma conta?</span>
-        <Link href={"/login"} className=" ml-2 underline text-blue-500">
+        <Link
+          href={"/login"}
+          className="ml-2 underline text-blue-500 font-medium"
+        >
           Faça o Login.
         </Link>
       </div>
 
       <div>
-        <div className="flex items-center border-2 rounded-xl px-3 py-2 gap-2">
+        <div className="flex items-center border-2 rounded-xl px-4 py-3 gap-2 hover:border-gray-400 transition-colors">
           <LetterText size={20} className="text-gray-500" />
           <Input
             id="nome"
@@ -107,7 +113,7 @@ const Registro = () => {
       </div>
 
       <div>
-        <div className="flex items-center border-2 rounded-xl px-3 py-2 gap-2">
+        <div className="flex items-center border-2 rounded-xl px-4 py-3 gap-2 hover:border-gray-400 transition-colors">
           <Mail size={20} className="text-gray-500" />
           <Input
             id="email"
@@ -121,7 +127,7 @@ const Registro = () => {
       </div>
 
       <div>
-        <div className="flex items-center border-2 rounded-xl px-3 py-2 gap-2">
+        <div className="flex items-center border-2 rounded-xl px-4 py-3 gap-2 hover:border-gray-400 transition-colors">
           <LockIcon className="text-gray-500" />
           <Input
             id="senha"
@@ -135,8 +141,8 @@ const Registro = () => {
         {errors.senha && <p className="startup-form_error">{errors.senha}</p>}
       </div>
 
-      <Button type="submit" className="w-full mb-3">
-        {isLoading ? "Cadastrando..." : "Cadastrar "}
+      <Button type="submit" className="w-full mb-3 py-6">
+        {isLoading ? "Cadastrando..." : "Cadastrar"}
       </Button>
     </form>
   );

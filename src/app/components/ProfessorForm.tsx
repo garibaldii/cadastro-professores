@@ -104,7 +104,7 @@ const ProfessorForm = () => {
 
   return (
     <form action={formAction} className="cadastro-form">
-      <div className="flex w-full">
+      <div className="flex flex-col sm:flex-row w-full gap-4 sm:gap-0">
         <div className="cadastro-form_col-div">
           <label htmlFor="nome" className="cadastro-form_label">
             Nome
@@ -133,7 +133,7 @@ const ProfessorForm = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <div>
           <label htmlFor="titulacao" className="cadastro-form_label">
             Titulação

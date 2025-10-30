@@ -18,32 +18,36 @@ const CadastroProfessor = () => {
         <h1 className="heading">Cadastre seu Professor</h1>
       </section>
 
-      <div className="flex justify-center items-center pt-4">
-        <div className="text-center">
-          <div className="p-4 border rounded-lg bg-green-50">
-            <h3 className="font-semibold mb-2">Importação em Lote</h3>
-            <p className="text-sm text-gray-600 mb-3">
-              Importe vários professores usando planilha Excel
-            </p>
-            <Button
-              className="w-full bg-green-600 hover:bg-green-700"
-              onClick={() => setIsImportModalOpen(true)}
-            >
-              <FileSpreadsheet className="w-4 h-4 mr-2" />
-              Importar CSV
-            </Button>
+      <div className="form-page-container">
+        <div className="flex justify-center items-center mb-6">
+          <div className="text-center">
+            <div className="p-5 border-2 rounded-lg bg-green-50 border-green-200 shadow-sm">
+              <h3 className="font-semibold mb-2 text-gray-800">
+                Importação em Lote
+              </h3>
+              <p className="text-sm text-gray-600 mb-3">
+                Importe vários professores usando planilha Excel
+              </p>
+              <Button
+                className="w-full bg-green-600 hover:bg-green-700"
+                onClick={() => setIsImportModalOpen(true)}
+              >
+                <FileSpreadsheet className="w-4 h-4 mr-2" />
+                Importar CSV
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div id="professor-form">
-        <ProfessorForm />
-      </div>
+        <div id="professor-form">
+          <ProfessorForm />
+        </div>
 
-      <ImportModal
-        isOpen={isImportModalOpen}
-        onClose={() => setIsImportModalOpen(false)}
-      />
+        <ImportModal
+          isOpen={isImportModalOpen}
+          onClose={() => setIsImportModalOpen(false)}
+        />
+      </div>
     </div>
   );
 };

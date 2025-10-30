@@ -141,8 +141,8 @@ const CourseForm = () => {
 
   return (
     <form action={formAction} className="cadastro-form">
-      <div className="flex w-full">
-        <div className="w-3/4 mr-3">
+      <div className="flex flex-col md:flex-row w-full gap-4 md:gap-0">
+        <div className="w-full md:w-3/4 md:mr-3">
           <label htmlFor="nome" className="cadastro-form_label">
             Nome
           </label>
@@ -150,7 +150,7 @@ const CourseForm = () => {
           {errors.nome && <p className="startup-form_error">{errors.nome}</p>}
         </div>
 
-        <div className="mr-3">
+        <div className="w-full md:w-auto md:mr-3">
           <label htmlFor="sigla" className="cadastro-form_label">
             Sigla
           </label>
@@ -164,7 +164,7 @@ const CourseForm = () => {
           {errors.sigla && <p className="startup-form_error">{errors.sigla}</p>}
         </div>
 
-        <div>
+        <div className="w-full md:w-auto">
           <label htmlFor="codigo" className="cadastro-form_label">
             Código
           </label>

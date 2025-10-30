@@ -230,20 +230,23 @@ const CourseEditSheet = ({ data, onUpdateFn }: CourseEditSheetProps) => {
         </Button>
       </SheetTrigger>
 
-      <SheetContent className="overflow-hidden flex flex-col">
+      <SheetContent className="overflow-hidden flex flex-col w-full sm:w-[540px] md:w-[600px] p-4 sm:p-6">
         <SheetHeader className="flex-shrink-0">
-          <SheetTitle>Editar Curso</SheetTitle>
-          <SheetDescription>
+          <SheetTitle className="text-lg sm:text-xl">Editar Curso</SheetTitle>
+          <SheetDescription className="text-sm">
             Faça suas alterações, clique em salvar quando finalizar
           </SheetDescription>
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto">
           {course ? (
-            <form action={formAction} className="cadastro-form !shadow-none">
-              <div className="grid flex-1 auto-rows-min gap-6 px-4 pb-6">
-                <div className="flex w-full">
-                  <div className="w-11/12 mr-3">
+            <form
+              action={formAction}
+              className="cadastro-form !shadow-none !px-0 !py-4"
+            >
+              <div className="grid flex-1 auto-rows-min gap-4 sm:gap-6 pb-6">
+                <div className="flex flex-col sm:flex-row w-full gap-3 sm:gap-0">
+                  <div className="w-full sm:w-11/12 sm:mr-3">
                     <label htmlFor="nome" className="cadastro-form_label">
                       Nome
                     </label>
@@ -255,7 +258,7 @@ const CourseEditSheet = ({ data, onUpdateFn }: CourseEditSheetProps) => {
                     />
                   </div>
 
-                  <div className="mr-3">
+                  <div className="w-full sm:w-auto sm:mr-3">
                     <label htmlFor="sigla" className="cadastro-form_label">
                       Sigla
                     </label>

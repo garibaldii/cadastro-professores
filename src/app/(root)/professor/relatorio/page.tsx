@@ -1,5 +1,3 @@
-
-
 import React from "react";
 
 import { profColumns, Professor } from "./columns";
@@ -13,7 +11,7 @@ async function RelatorioProfessor() {
   const professors: Professor[] = await getProfessors();
 
   // Define colunas que quer exportar
-    const selectedColumns = [
+  const selectedColumns = [
     "nome",
     "email",
     "titulacao",
@@ -23,8 +21,7 @@ async function RelatorioProfessor() {
   ];
 
   return (
-    <div className="px-12 py-8 pt-[5%] space-y-6">
-
+    <div className="table-container">
       <RelatoryActions
         title="Relatório de Professores"
         data={professors}

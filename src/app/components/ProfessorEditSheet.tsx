@@ -142,18 +142,26 @@ const ProfessorEditSheet = ({ data, onUpdateFn }: ProfessorEditSheetProps) => {
           <Pencil />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="overflow-y-auto">
+      <SheetContent
+        side="right"
+        className="overflow-y-auto w-full sm:w-[540px] md:w-[600px] p-4 sm:p-6"
+      >
         <SheetHeader>
-          <SheetTitle>Editar Professor</SheetTitle>
-          <SheetDescription>
+          <SheetTitle className="text-lg sm:text-xl">
+            Editar Professor
+          </SheetTitle>
+          <SheetDescription className="text-sm">
             Faça suas alterações, clique em salvar quando finalizar
           </SheetDescription>
         </SheetHeader>
 
         {professor ? (
-          <form action={formAction} className="cadastro-form !shadow-none">
-            <div className="flex gap-4">
-              <div className="flex-2">
+          <form
+            action={formAction}
+            className="cadastro-form !shadow-none !px-0 !py-4"
+          >
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <div className="flex-2 w-full">
                 <label htmlFor="nome" className="cadastro-form_label">
                   Nome
                 </label>
@@ -166,7 +174,7 @@ const ProfessorEditSheet = ({ data, onUpdateFn }: ProfessorEditSheetProps) => {
                 />
               </div>
 
-              <div className="flex-1">
+              <div className="flex-1 w-full sm:w-auto">
                 <label htmlFor="idUnidade" className="cadastro-form_label">
                   ID da Unidade
                 </label>
@@ -181,7 +189,7 @@ const ProfessorEditSheet = ({ data, onUpdateFn }: ProfessorEditSheetProps) => {
                   placeholder="Digite o id da unidade respectiva"
                   onInput={(e) => {
                     const target = e.target as HTMLInputElement;
-                    target.value = target.value.replace(/\D/g, ""); // remove tudo que não for número
+                    target.value = target.value.replace(/\D/g, ""); // remove tudo que não foi número
                   }}
                 />
               </div>
@@ -201,8 +209,8 @@ const ProfessorEditSheet = ({ data, onUpdateFn }: ProfessorEditSheetProps) => {
               />
             </div>
 
-            <div className="flex ">
-              <div className="w-1/2">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-2">
+              <div className="w-full sm:w-1/2">
                 <label htmlFor="titulacao" className="cadastro-form_label">
                   Titulação
                 </label>
@@ -227,7 +235,7 @@ const ProfessorEditSheet = ({ data, onUpdateFn }: ProfessorEditSheetProps) => {
                 </Select>
               </div>
 
-              <div className="w-1/2 ml-2">
+              <div className="w-full sm:w-1/2 sm:ml-2">
                 <label htmlFor="referencia" className="cadastro-form_label">
                   Referência
                 </label>

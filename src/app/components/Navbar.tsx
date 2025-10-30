@@ -17,10 +17,12 @@ function norm(s: string): string {
 const SA = new Set(["SUPERADMIN", "SUPERADM", "SUPERADMINISTRATOR"]);
 const ADMIN = new Set(["ADMIN", "ADM", ...SA]);
 
-function isAdminOrSuper(session: {
-  role?: string;
-  roles?: string[];
-} | null): boolean {
+function isAdminOrSuper(
+  session: {
+    role?: string;
+    roles?: string[];
+  } | null
+): boolean {
   if (!session) return false;
   const raw = [
     ...(Array.isArray(session.roles) ? session.roles : []),
@@ -35,13 +37,19 @@ const Navbar = async () => {
   const canSeeMonitores = isAdminOrSuper(session);
 
   return (
-    <header className="px-5 py-3 bg-gray-50 shadow-sm font-work-sans text-gray-800 border-b border-gray-200">
-      <nav className="flex justify-between items-center ">
+    <header className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-4 bg-gray-50 shadow-md font-work-sans text-gray-800 border-b border-gray-200">
+      <nav className="flex justify-between items-center max-w-[1400px] mx-auto">
         <Link href="/">
-          <Image src="/logo.png" alt="logo" width={144} height={30} />
+          <Image
+            src="/logo.png"
+            alt="logo"
+            width={144}
+            height={30}
+            className="w-32 sm:w-36"
+          />
         </Link>
 
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-3 sm:gap-4 md:gap-6">
           {session && session.id ? (
             <>
               {/* Professores */}

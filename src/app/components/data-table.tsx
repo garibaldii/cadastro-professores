@@ -98,21 +98,21 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="border bg-white p-10 rounded-md shadow-2xl ">
+    <div className="border bg-white p-4 sm:p-6 md:p-8 lg:p-10 rounded-lg shadow-lg">
       {/* Filters */}
       {searchFields.length > 0 && (
-        <div className="flex items-center py-4">
+        <div className="flex items-center py-4 mb-2">
           <Input
             placeholder={searchPlaceholder}
             value={globalFilter}
             onChange={(event) => setGlobalFilter(event.target.value)}
-            className="max-w-sm"
+            className="max-w-full sm:max-w-sm w-full"
           />
         </div>
       )}
 
       {/* Table */}
-      <div className="overflow-hidden">
+      <div className="overflow-x-auto rounded-md border border-gray-200">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

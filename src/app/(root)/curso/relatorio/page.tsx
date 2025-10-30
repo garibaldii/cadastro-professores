@@ -11,10 +11,7 @@ export const dynamic = "force-dynamic";
 async function RelatorioCurso() {
   const courses: Course[] = await getCourses();
 
-
-
-
-    const selectedColumns = [
+  const selectedColumns = [
     "nome",
     "codigo",
     "sigla",
@@ -23,9 +20,7 @@ async function RelatorioCurso() {
   ];
 
   return (
-    <div className="px-12 py-8">
-
-
+    <div className="table-container">
       <RelatoryActions
         title="Relatório de Cursos"
         data={courses}

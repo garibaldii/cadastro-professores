@@ -10,7 +10,9 @@ const CadastroCurso = () => {
       <section className="pink_container !min-h-[70px]">
         <h1 className="heading">Cadastre seu Curso</h1>
       </section>
-      <CourseForm />
+      <div className="form-page-container">
+        <CourseForm />
+      </div>
     </div>
   );
 };
