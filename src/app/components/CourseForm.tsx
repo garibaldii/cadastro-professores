@@ -37,10 +37,28 @@ const CourseForm = () => {
       try {
         const [m, p] = await Promise.all([getModeloCurso(), getProfessors()]);
 
-        setModelosCurso(m?.data || []);
-        setProfessors(p || []);
+        setModelosCurso(Array.isArray(m?.data) ? m.data : []);
+
+        // Se o retorno de getProfessors() for um objeto, extrai o campo correto
+        const profs = Array.isArray(p)
+          ? p
+          : Array.isArray(p?.data)
+          ? p.data
+          : [];
+
+        if (!Array.isArray(profs) || profs.length === 0) {
+          toast.warning("Nenhum professor encontrado", {
+            description: "Cadastre professores antes de criar um curso.",
+            duration: 60000,
+            position: "top-center",
+          });
+        }
+
+        setProfessors(profs);
       } catch (err) {
         console.error("Erro ao buscar dados:", err);
+        setModelosCurso([]);
+        setProfessors([]);
       }
     }
 
@@ -212,19 +230,26 @@ const CourseForm = () => {
         <label htmlFor="coordenadorId" className="cadastro-form_label">
           Coordenador
         </label>
-        <Select name="coordenadorId">
-          <SelectTrigger className="cadastro-form_select !w-full">
-            <SelectValue placeholder="Selecionar o coordenador"></SelectValue>
-          </SelectTrigger>
 
-          <SelectContent>
-            {professors?.map((prof) => (
-              <SelectItem key={prof.id} value={String(prof.id)}>
-                {prof.nome}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {Array.isArray(professors) && professors.length > 0 ? (
+          <Select name="coordenadorId">
+            <SelectTrigger className="cadastro-form_select !w-full">
+              <SelectValue placeholder="Selecionar o coordenador" />
+            </SelectTrigger>
+
+            <SelectContent>
+              {professors.map((prof) => (
+                <SelectItem key={prof.id} value={String(prof.id)}>
+                  {prof.nome}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : (
+          <div className="text-center text-red-600 bg-gray-50 border rounded-md p-4 mt-2">
+            VOCÊ PRECISA CADASTRAR PELO MENOS UM PROFESSOR
+          </div>
+        )}
 
         {errors.coordenadorId && (
           <p className="startup-form_error">{errors.coordenadorId}</p>
