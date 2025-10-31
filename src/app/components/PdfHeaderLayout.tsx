@@ -1,6 +1,7 @@
 import { getSession } from "@/lib/actions/index";
 
 // Labels personalizáveis
+
 const professorLabels: Record<string, string> = {
   nome: "Nome",
   email: "Email",
@@ -9,6 +10,39 @@ const professorLabels: Record<string, string> = {
   referencia: "Referência",
   statusAtividade: "Status",
 };
+
+const monitorLabels: Record<string, string> = {
+  nome: "Nome",
+  email: "Email",
+  tipo: "Tipo",
+  professor: "Professor",
+  cargaHorariaSemanal: "CH Semanal",
+  status: "Status",
+};
+
+export const monitorContent = (
+  data: Record<string, unknown>[],
+  headers: string[]
+) => `
+  <table>
+    <thead>
+      <tr>
+        ${headers.map((key) => `<th>${monitorLabels[key] ?? key}</th>`).join("")}
+      </tr>
+    </thead>
+    <tbody>
+      ${data
+        .map(
+          (row) => `
+        <tr>
+          ${headers.map((key) => `<td>${row[key] ?? ""}</td>`).join("")}
+        </tr>
+      `
+        )
+        .join("")}
+    </tbody>
+  </table>
+`;
 
 const courseLabels: Record<string, string> = {
   nome: "Curso",
@@ -92,6 +126,7 @@ export const professorContent = (
 `;
 
 export const courseContent = (
+// Removido bloco duplicado de monitorContent
   data: Record<string, unknown>[],
   headers: string[]
 ) => `

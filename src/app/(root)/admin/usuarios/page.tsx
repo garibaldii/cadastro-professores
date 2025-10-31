@@ -1,14 +1,14 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
-import MonitorCreateSheet from "@/app/components/MonitorCreateSheet";
-import MonitoresTable from "./MonitoresTable";
+import UsuariosTable from "./UsuariosTable";
 
 type Decoded = { role?: string; roles?: string[] };
 
 function norm(s: string) {
   return s.toUpperCase().replace(/[\s_\-]/g, "");
 }
+
 const SA = new Set(["SUPERADMIN", "SUPERADM", "SUPERADMINISTRATOR"]);
 const ADMIN = new Set(["ADMIN", "ADM", ...SA]);
 
@@ -29,29 +29,24 @@ async function roleFlags() {
   }
 }
 
-export default async function MonitoresPage() {
+export default async function UsuariosPage() {
   const c = await cookies();
   const token = c.get("token")?.value;
   if (!token) redirect("/login");
 
-  const { isAdmin, isSuper } = await roleFlags();
-  if (!isAdmin) redirect("/"); // ADMIN ou SUPER acessam a página
+  const { isSuper } = await roleFlags();
+  if (!isSuper) redirect("/"); // Apenas SUPER_ADMIN pode acessar usuários
 
   return (
     <div className="table-container">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-2">
         <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
-          Monitores
+          Usuários
         </h1>
-        {/* Formulário de criação visível APENAS para SUPER_ADMIN */}
-        {isSuper && <MonitorCreateSheet />}
       </div>
 
-      {/* Tabela: 
-          - ADMIN: apenas visualiza + exporta PDF
-          - SUPER_ADMIN: pode aprovar/remover/editar 
-      */}
-      <MonitoresTable canEdit={isSuper} canValidate={isSuper} />
+      {/* Tabela com ações de ativar/desativar (somente para SUPER_ADMIN) */}
+      <UsuariosTable canToggleStatus={isSuper} />
     </div>
   );
 }

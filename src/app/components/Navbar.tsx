@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { jwtDecode } from "jwt-decode";
 
 import {
   DropdownMenu,
@@ -9,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getSession, logout } from "@/lib/actions/index";
+import SubmitLogoutButton from "@/app/components/SubmitLogoutButton";
 
 // --- adição mínima: helpers de papel ---
 function norm(s: string): string {
@@ -17,24 +20,29 @@ function norm(s: string): string {
 const SA = new Set(["SUPERADMIN", "SUPERADM", "SUPERADMINISTRATOR"]);
 const ADMIN = new Set(["ADMIN", "ADM", ...SA]);
 
-function isAdminOrSuper(
-  session: {
-    role?: string;
-    roles?: string[];
-  } | null
-): boolean {
-  if (!session) return false;
-  const raw = [
-    ...(Array.isArray(session.roles) ? session.roles : []),
-    ...(session.role ? [session.role] : []),
-  ];
-  return raw.map(norm).some((r) => ADMIN.has(r));
+// Flags de papel via token (robusto contra sessão sem roles)
+async function getRoleFlagsFromToken() {
+  const c = await cookies();
+  const token = c.get("token")?.value;
+  if (!token) return { isAdmin: false, isSuper: false };
+  try {
+    const d = jwtDecode<{ role?: string; roles?: string[] }>(token);
+    const raw = d.roles ?? (d.role ? [d.role] : []);
+    const N = raw.map(norm);
+    const isSuper = N.some((r) => SA.has(r));
+    const isAdmin = isSuper || N.some((r) => ADMIN.has(r));
+    return { isAdmin, isSuper };
+  } catch {
+    return { isAdmin: false, isSuper: false };
+  }
 }
 // --- fim da adição mínima ---
 
 const Navbar = async () => {
   const session = await getSession();
-  const canSeeMonitores = isAdminOrSuper(session);
+  const { isAdmin, isSuper } = await getRoleFlagsFromToken();
+  const canSeeMonitores = isAdmin;
+  const canSeeUsuarios = isSuper;
 
   return (
     <header className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-4 bg-gray-50 shadow-md font-work-sans text-gray-800 border-b border-gray-200">
@@ -92,25 +100,33 @@ const Navbar = async () => {
                 </Link>
               )}
 
+              {/* Usuários — aparece APENAS para SUPER_ADMIN */}
+              {canSeeUsuarios && (
+                <Link
+                  href="/admin/usuarios"
+                  className="text-black-400 hover:text-rose-500 cursor-pointer transition-colors duration-200 font-medium"
+                >
+                  Usuários
+                </Link>
+              )}
+
               {/* Usuário */}
               <DropdownMenu>
                 <DropdownMenuTrigger className="text-black-400 hover:text-rose-500 cursor-pointer transition-colors duration-200 font-medium">
                   <span>{session.nome}</span>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem>
-                    <form
-                      action={async () => {
-                        "use server";
-                        await logout();
-                        redirect("/login");
-                      }}
-                    >
-                      <button type="submit" className="text-red-400">
-                        Logout
-                      </button>
-                    </form>
-                  </DropdownMenuItem>
+                  <form
+                    action={async () => {
+                      "use server";
+                      await logout();
+                      redirect("/login");
+                    }}
+                  >
+                    <DropdownMenuItem asChild>
+                      <SubmitLogoutButton className="text-red-500 w-full text-left" />
+                    </DropdownMenuItem>
+                  </form>
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
