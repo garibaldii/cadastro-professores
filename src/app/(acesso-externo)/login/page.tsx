@@ -104,7 +104,7 @@ function LoginForm() {
 
       <div className="flex justify-center text-sm">
         <Link
-          href={"/usuario/esqueceu-senha"}
+          href={"/esqueceu-senha"}
           className="underline text-blue-500 font-medium"
         >
           Esqueceu sua senha?
