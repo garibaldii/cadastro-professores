@@ -231,25 +231,20 @@ const CourseForm = () => {
           Coordenador
         </label>
 
-        {Array.isArray(professors) && professors.length > 0 ? (
           <Select name="coordenadorId">
             <SelectTrigger className="cadastro-form_select !w-full">
               <SelectValue placeholder="Selecionar o coordenador" />
             </SelectTrigger>
 
             <SelectContent>
-              {professors.map((prof) => (
+              {professors?.map((prof) => (
                 <SelectItem key={prof.id} value={String(prof.id)}>
                   {prof.nome}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-        ) : (
-          <div className="text-center text-red-600 bg-gray-50 border rounded-md p-4 mt-2">
-            VOCÊ PRECISA CADASTRAR PELO MENOS UM PROFESSOR
-          </div>
-        )}
+        
 
         {errors.coordenadorId && (
           <p className="startup-form_error">{errors.coordenadorId}</p>
