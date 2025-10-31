@@ -199,7 +199,7 @@ export async function uploadProfessorPlanilha(
       "token"
     )?.value;
 
-    const apiUrl = process.env.API_URL || "http://localhost:3001";
+    const apiUrl = process.env.API_URL;
 
     const uploadUrl = `${apiUrl}/professores/upload/planilha-modelo.xlsx`;
 
