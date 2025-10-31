@@ -99,6 +99,39 @@ export async function GET(
   return NextResponse.json(body, { status: res.status });
 }
 
+export async function PUT(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const params = await context.params;
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+  if (!token)
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+  const decoded = decodeJwt(token);
+  if (!isSuper(decoded))
+    return NextResponse.json({ message: "Forbidden - Super Admin required" }, { status: 403 });
+
+  const payload = (await req.json().catch(() => ({}))) as Record<string, unknown>;
+  const url = `${getApiBase()}/monitores/${params.id}`;
+
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: { 
+      "Content-Type": "application/json", 
+      Authorization: `Bearer ${token}` 
+    },
+    body: JSON.stringify(payload),
+    cache: "no-store",
+  });
+
+  const body = (await res
+    .json()
+    .catch(() => ({ message: "Empty or invalid JSON" }))) as ApiResponseBody;
+  return NextResponse.json(body, { status: res.status });
+}
+
 export async function OPTIONS() {
   return NextResponse.json({}, { status: 204 });
 }

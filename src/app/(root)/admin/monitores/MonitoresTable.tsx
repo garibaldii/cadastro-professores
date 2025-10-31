@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { toast } from "sonner";
+import { shareDataToPdfFile } from "@/app/components/PdfBodyLayout";
+import MonitorEditSheet from "@/app/components/MonitorEditSheet";
 
 type Monitor = {
   id: string;
@@ -15,9 +17,11 @@ type Monitor = {
 };
 
 export default function MonitoresTable({
-  canValidate = true,
+  canValidate = false,
+  canEdit = false,
 }: {
   canValidate?: boolean;
+  canEdit?: boolean;
 }) {
   const [loading, setLoading] = React.useState(false);
   const [erro, setErro] = React.useState<string | null>(null);
@@ -122,6 +126,31 @@ export default function MonitoresTable({
     }
   }
 
+  const exportarPDF = async () => {
+    if (data.length === 0) return;
+    toast.info("Exportando para PDF...");
+    // Define colunas que quer exportar
+    const selectedColumns = [
+      "nome",
+      "email",
+      "tipo",
+      "professor",
+      "cargaHorariaSemanal",
+      "status"
+    ];
+    // Prepara os dados para exportação
+    const exportData = data.map((m) => ({
+      nome: m.nome,
+      email: m.email,
+      tipo: m.tipo,
+      professor: m.professor?.nome ?? "-",
+      cargaHorariaSemanal: m.cargaHorariaSemanal ?? "-",
+      status: m.usuario?.isActive ? "Ativo" : "Pendente/Inativo"
+    }));
+    await shareDataToPdfFile(exportData, "monitores", selectedColumns);
+    toast.success("PDF gerado com sucesso!");
+  };
+
   return (
     <div className="mt-4">
       {erro && (
@@ -129,6 +158,20 @@ export default function MonitoresTable({
           {erro}
         </div>
       )}
+
+      {/* Botão de Exportar PDF - disponível para ADMIN e SUPER_ADMIN */}
+      <div className="mb-4 flex justify-end">
+        <button
+          onClick={exportarPDF}
+          disabled={loading || data.length === 0}
+          className="px-4 py-2 bg-black text-white rounded-lg hover:bg-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm flex items-center gap-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
+          </svg>
+          Exportar Relatório
+        </button>
+      </div>
 
       <div className="rounded-xl border border-neutral-200 overflow-x-auto shadow-md bg-white">
         <table className="min-w-full text-sm">
@@ -152,7 +195,7 @@ export default function MonitoresTable({
               <th className="text-left px-3 sm:px-4 py-3 whitespace-nowrap">
                 Status
               </th>
-              {canValidate && (
+              {(canValidate || canEdit) && (
                 <th className="text-left px-3 sm:px-4 py-3 whitespace-nowrap">
                   Ações
                 </th>
@@ -162,13 +205,13 @@ export default function MonitoresTable({
           <tbody>
             {loading ? (
               <tr>
-                <td className="px-3 sm:px-4 py-4" colSpan={canValidate ? 7 : 6}>
+                <td className="px-3 sm:px-4 py-4" colSpan={(canValidate || canEdit) ? 7 : 6}>
                   Carregando...
                 </td>
               </tr>
             ) : data.length === 0 ? (
               <tr>
-                <td className="px-3 sm:px-4 py-4" colSpan={canValidate ? 7 : 6}>
+                <td className="px-3 sm:px-4 py-4" colSpan={(canValidate || canEdit) ? 7 : 6}>
                   Nenhum monitor encontrado
                 </td>
               </tr>
@@ -198,23 +241,33 @@ export default function MonitoresTable({
                     <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
                       {ativo ? "Ativo" : "Pendente/Inativo"}
                     </td>
-                    {canValidate && (
+                    {(canValidate || canEdit) && (
                       <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
                         <div className="flex gap-1 sm:gap-2 flex-wrap">
-                          <button
-                            className="px-2 sm:px-3 py-1.5 rounded border border-green-600 text-green-700 hover:bg-green-50 disabled:opacity-50 transition-colors text-xs sm:text-sm font-medium"
-                            onClick={() => aprovar(m)}
-                            disabled={busy === m.id || ativo || !m.usuario?.id}
-                          >
-                            Aprovar
-                          </button>
-                          <button
-                            className="px-2 sm:px-3 py-1.5 rounded border border-red-600 text-red-700 hover:bg-red-50 disabled:opacity-50 transition-colors text-xs sm:text-sm font-medium"
-                            onClick={() => reprovar(m)}
-                            disabled={busy === m.id}
-                          >
-                            Reprovar
-                          </button>
+                          {canEdit && (
+                            <MonitorEditSheet
+                              monitorId={m.id}
+                              triggerClassName="px-2 sm:px-3 py-1.5 rounded border border-blue-600 text-blue-700 hover:bg-blue-50 disabled:opacity-50 transition-colors text-xs sm:text-sm font-medium"
+                            />
+                          )}
+                          {canValidate && (
+                            <>
+                              <button
+                                className="px-2 sm:px-3 py-1.5 rounded border border-green-600 text-green-700 hover:bg-green-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm font-medium"
+                                onClick={() => aprovar(m)}
+                                disabled={busy === m.id || ativo || !m.usuario?.id}
+                              >
+                                {busy === m.id ? "Aprovando..." : "Aprovar"}
+                              </button>
+                              <button
+                                className="px-2 sm:px-3 py-1.5 rounded border border-red-600 text-red-700 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm font-medium"
+                                onClick={() => reprovar(m)}
+                                disabled={busy === m.id}
+                              >
+                                {busy === m.id ? "Removendo..." : "Reprovar"}
+                              </button>
+                            </>
+                          )}
                         </div>
                       </td>
                     )}
