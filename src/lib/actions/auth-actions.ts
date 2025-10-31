@@ -63,6 +63,19 @@ export async function login(form: FormData): Promise<ActionResponse> {
     }
 
     const data = await res.json();
+    
+    // Bloqueia acesso de monitores/pesquisadores ao sistema web
+    const userRole = data.user?.role || data.role;
+    const userName = data.user?.nome || data.nome || "Usuário";
+    
+    if (userRole === "MONITOR" || userRole === "PESQUISADOR") {
+      const tipoUsuario = userRole === "MONITOR" ? "Monitores" : "Pesquisadores";
+      return {
+        error: `Olá ${userName}, o acesso para ${tipoUsuario} é feito exclusivamente pelo aplicativo.`,
+        status: "ERROR",
+      };
+    }
+    
     await setAuthToken(data.token);
 
     return { error: "", status: "SUCCESS", data };
