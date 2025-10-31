@@ -16,7 +16,6 @@ async function RelatorioCurso() {
     "codigo",
     "sigla",
     "modelo",
-    "coordenador.nome",
   ];
 
   return (
@@ -25,7 +24,7 @@ async function RelatorioCurso() {
         title="Relatório de Cursos"
         data={courses}
         selectedColumns={selectedColumns}
-        type="professor"
+        type="course"
       />
 
       <DataTable
