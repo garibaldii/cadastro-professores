@@ -127,31 +127,146 @@ export default function MonitoresTable({
   }
 
   const exportarPDF = async () => {
-    if (data.length === 0) return;
-    toast.info("Exportando para PDF...");
-    // Define colunas que quer exportar
-    const selectedColumns = [
-      "nome",
-      "email",
-      "tipo",
-      "professor",
-      "cargaHorariaSemanal",
-      "status"
-    ];
-    // Prepara os dados para exportação
-    const exportData = data.map((m) => ({
-      nome: m.nome,
-      email: m.email,
-      tipo: m.tipo,
-      professor: m.professor?.nome ?? "-",
-      cargaHorariaSemanal: m.cargaHorariaSemanal ?? "-",
-      status: m.usuario?.isActive ? "Ativo" : "Pendente/Inativo"
-    }));
-    await shareDataToPdfFile(exportData, "monitores", selectedColumns);
-    toast.success("PDF gerado com sucesso!");
-  };
+    toast.info("Gerando relatório de ponto...");
+    try {
+      // Assumimos últimos 30 dias; pode ser ajustado depois com filtros na UI
+      const fim = new Date();
+      const inicio = new Date(Date.now() - 29 * 24 * 60 * 60 * 1000); // 30 dias incluindo hoje
+      const dataInicio = inicio.toISOString();
+      const dataFim = fim.toISOString();
 
-  return (
+      const res = await fetch(`/api/ponto?limit=500&dataInicio=${encodeURIComponent(dataInicio)}&dataFim=${encodeURIComponent(dataFim)}`, { cache: "no-store" });
+      interface PontoApiResponse {
+        success?: boolean;
+        pontos?: PontoRecord[];
+        data?: PontoRecord[]; // alguns endpoints usam 'data'
+        mensagem?: string;
+        message?: string;
+        bruto?: string; // resposta não JSON parcial
+      }
+      interface PontoRecord {
+        id?: string;
+        entrada?: string;
+        saida?: string | null;
+        usuario?: { id?: string; nome?: string; email?: string } | null;
+      }
+      let body: PontoApiResponse = {};
+      try { body = await res.json(); } catch {}
+      if (!res.ok) {
+        const rawInfo = body?.bruto ? ` (parcial: ${String(body.bruto).slice(0,120)})` : "";
+        toast.error((body?.mensagem || body?.message || `Erro ${res.status} ao carregar pontos`) + rawInfo);
+        return;
+      }
+      const pontos: PontoRecord[] = (Array.isArray(body?.pontos) ? body.pontos : Array.isArray(body?.data) ? body.data : []);
+      if (!Array.isArray(pontos) || pontos.length === 0) {
+        toast.error("Nenhum registro de ponto no período.");
+        return;
+      }
+
+      // Helpers para formatação igual ao app mobile
+      function formatDate(dt?: string | null) {
+        if (!dt) return "-";
+        const d = new Date(dt);
+        if (isNaN(d.getTime())) return "-";
+        return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
+      }
+      function formatTime(dt?: string | null) {
+        if (!dt) return "-";
+        const d = new Date(dt);
+        if (isNaN(d.getTime())) return "-";
+        return d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+      }
+      function calcHorasTrabalhadas(entrada?: string, saida?: string) {
+        if (!entrada || !saida) return "-";
+        const dE = new Date(entrada); const dS = new Date(saida);
+        if (isNaN(dE.getTime()) || isNaN(dS.getTime()) || dS < dE) return "-";
+        const diffMs = dS.getTime() - dE.getTime();
+        const totalMin = Math.floor(diffMs / 60000);
+        const horas = Math.floor(totalMin / 60);
+        const mins = totalMin % 60;
+        return `${horas}h ${mins}min`;
+      }
+
+      // Transformar dados exatamente como o app mobile
+      const exportData = pontos.map((p) => ({
+        data: formatDate(p.entrada),
+        entrada: formatTime(p.entrada),
+        saida: p.saida ? formatTime(p.saida) : "Em aberto",
+        horasTrabalhadas: calcHorasTrabalhadas(p.entrada, p.saida || undefined),
+      }));
+
+      // Calcular total de horas (igual app mobile)
+      let totalMinutes = 0;
+      pontos.forEach((p) => {
+        if (p.entrada && p.saida) {
+          const dE = new Date(p.entrada); const dS = new Date(p.saida);
+          if (!isNaN(dE.getTime()) && !isNaN(dS.getTime()) && dS > dE) {
+            totalMinutes += (dS.getTime() - dE.getTime()) / 60000;
+          }
+        }
+      });
+      const totalHoras = Math.floor(totalMinutes / 60);
+      const totalMins = Math.floor(totalMinutes % 60);
+      const totalHorasStr = `${totalHoras}h ${totalMins}min`;
+
+      // Período (igual app mobile)
+      const periodoStr = pontos.length > 0 
+        ? `${formatDate(pontos[pontos.length - 1].entrada)} até ${formatDate(pontos[0].entrada)}`
+        : "N/A";
+
+      // Buscar info do primeiro monitor (se houver)
+      const primeiroUsuario = pontos[0]?.usuario;
+      let monitorInfo = undefined;
+
+      if (primeiroUsuario?.id) {
+        // Buscar dados completos do monitor via /api/monitores
+        try {
+          const resMonitores = await fetch("/api/monitores", { cache: "no-store" });
+          const bodyMonitores = await resMonitores.json().catch(() => ({}));
+          const monitores: Monitor[] = Array.isArray(bodyMonitores) ? bodyMonitores : Array.isArray(bodyMonitores?.data) ? bodyMonitores.data : [];
+          
+          // Encontrar monitor pelo usuarioId
+          const monitorEncontrado = monitores.find(m => m.usuario?.id === primeiroUsuario.id);
+          
+          if (monitorEncontrado) {
+            monitorInfo = {
+              nome: monitorEncontrado.nome || "N/A",
+              email: monitorEncontrado.email || "N/A",
+              projeto: monitorEncontrado.nomePesquisaMonitoria || "N/A",
+              professor: monitorEncontrado.professor?.nome || "N/A",
+              cargaHoraria: monitorEncontrado.cargaHorariaSemanal?.toString() || "N/A",
+            };
+          }
+        } catch (err) {
+          console.warn("Não foi possível carregar dados do monitor:", err);
+        }
+      }
+      
+      // Fallback se não conseguiu buscar
+      if (!monitorInfo && primeiroUsuario) {
+        monitorInfo = {
+          nome: primeiroUsuario.nome || "N/A",
+          email: primeiroUsuario.email || "N/A",
+          projeto: "N/A",
+          professor: "N/A",
+          cargaHoraria: "N/A",
+        };
+      }
+
+      const summary = {
+        totalRegistros: pontos.length,
+        totalHoras: totalHorasStr,
+        periodo: periodoStr,
+      };
+
+      const selectedColumns = ["data", "entrada", "saida", "horasTrabalhadas"];
+      await shareDataToPdfFile(exportData, "ponto", selectedColumns, { monitorInfo, summary });
+      toast.success("Relatório de ponto gerado!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro inesperado ao gerar relatório de ponto");
+    }
+  };  return (
     <div className="mt-4">
       {erro && (
         <div className="rounded-md border border-amber-300 bg-amber-50 text-amber-900 p-4 text-sm mb-4">

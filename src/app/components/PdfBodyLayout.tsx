@@ -1,9 +1,23 @@
-import { HeaderHtml, professorContent, courseContent, monitorContent } from "./PdfHeaderLayout";
+import { HeaderHtml, professorContent, courseContent, monitorContent, pontoContent } from "./PdfHeaderLayout";
 
 export const shareDataToPdfFile = async (
   data: Record<string, unknown>[],
-  type: "professor" | "course" | "monitores",
-  selectedColumns: string[]
+  type: "professor" | "course" | "monitores" | "ponto",
+  selectedColumns: string[],
+  extraData?: {
+    monitorInfo?: {
+      nome: string;
+      email: string;
+      projeto: string;
+      professor: string;
+      cargaHoraria: string;
+    };
+    summary?: {
+      totalRegistros: number;
+      totalHoras: string;
+      periodo: string;
+    };
+  }
 ) => {
   const header = await HeaderHtml();
 
@@ -24,6 +38,7 @@ export const shareDataToPdfFile = async (
   ${type === "professor" ? professorContent(data, selectedColumns) : ""}
   ${type === "course" ? courseContent(data, selectedColumns) : ""}
   ${type === "monitores" ? monitorContent(data, selectedColumns) : ""}
+  ${type === "ponto" ? pontoContent(data, selectedColumns, extraData?.monitorInfo, extraData?.summary) : ""}
         <script>
           // Espera todas as imagens carregarem antes de printar
           const images = Array.from(document.images);
