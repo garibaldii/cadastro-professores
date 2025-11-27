@@ -216,13 +216,10 @@ export function Chat({
         isPending={isGenerating || isTyping}
         handleSubmit={handleSubmit}
       >
-        {({ files, setFiles }) => (
+        {() => (
           <MessageInput
             value={input}
             onChange={handleInputChange}
-            allowAttachments
-            files={files}
-            setFiles={setFiles}
             stop={handleStop}
             isGenerating={isGenerating}
             transcribeAudio={transcribeAudio}
@@ -250,7 +247,7 @@ export function ChatMessages({
 
   return (
     <div
-      className="grid grid-cols-1 overflow-y-auto pb-4"
+  className="grid grid-cols-1 overflow-y-auto pb-4 overflow-x-hidden max-w-full"
       ref={containerRef}
       onScroll={handleScroll}
       onTouchStart={handleTouchStart}
