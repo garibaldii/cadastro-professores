@@ -135,7 +135,7 @@ export default function UsuariosTable({
           onClick={() => setFilter("all")}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             filter === "all"
-              ? "bg-blue-600 text-white"
+              ? "bg-red-600 text-white"
               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
           }`}
         >
@@ -145,7 +145,7 @@ export default function UsuariosTable({
           onClick={() => setFilter("active")}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             filter === "active"
-              ? "bg-green-600 text-white"
+              ? "bg-red-600 text-white"
               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
           }`}
         >
@@ -216,17 +216,17 @@ export default function UsuariosTable({
                         const roles = usuario.roles || (usuario.role ? [usuario.role] : []);
                         const normalized = roles.map((r) => r.toUpperCase());
                         if (normalized.includes("SUPER_ADMIN") || normalized.includes("SUPERADMIN")) {
-                          return <span className="px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded">Super Admin</span>;
+                          return <span className="px-2 py-1 text-xs font-medium bg-red-500 text-black-800 rounded">Super Admin</span>;
                         }
                         if (normalized.includes("ADMIN")) {
-                          return <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded">Admin</span>;
+                          return <span className="px-2 py-1 text-xs font-medium bg-red-300 text-red-800 rounded">Admin</span>;
                         }
                         if (usuario.monitor) {
                           if (usuario.monitor.tipo === "MONITOR") {
-                            return <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded">Monitor</span>;
+                            return <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded">Monitor</span>;
                           }
                           if (usuario.monitor.tipo === "PESQUISADOR") {
-                            return <span className="px-2 py-1 text-xs font-medium bg-orange-100 text-orange-800 rounded">Pesquisador</span>;
+                            return <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded">Pesquisador</span>;
                           }
                         }
                         return <span className="text-gray-400">-</span>;
@@ -236,7 +236,7 @@ export default function UsuariosTable({
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded ${
                         usuario.isActive
-                          ? "bg-green-100 text-green-800"
+                          ? "bg-gray-200 text-gray-800"
                           : "bg-red-100 text-red-800"
                       }`}
                     >
@@ -249,7 +249,7 @@ export default function UsuariosTable({
                         className={`px-3 py-1.5 rounded border text-xs sm:text-sm font-medium transition-colors ${
                           usuario.isActive
                             ? "border-red-600 text-red-700 hover:bg-red-50"
-                            : "border-green-600 text-green-700 hover:bg-green-50"
+                            : "border-gray-600 text-gray-700 hover:bg-gray-50"
                         } disabled:opacity-50 disabled:cursor-not-allowed`}
                         onClick={() => toggleStatus(usuario)}
                         disabled={busy === usuario.id}

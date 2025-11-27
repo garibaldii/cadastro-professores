@@ -21,7 +21,7 @@ const CadastroProfessor = () => {
       <div className="form-page-container">
         <div className="flex justify-center items-center mb-6">
           <div className="text-center">
-            <div className="p-5 border-2 rounded-lg bg-green-50 border-green-200 shadow-sm">
+            <div className="p-5 border-2 rounded-lg bg-red-50 border-red-200 shadow-sm">
               <h3 className="font-semibold mb-2 text-gray-800">
                 Importação em Lote
               </h3>
@@ -29,7 +29,7 @@ const CadastroProfessor = () => {
                 Importe vários professores usando planilha Excel
               </p>
               <Button
-                className="w-full bg-green-600 hover:bg-green-700"
+                className="w-full bg-red-600 hover:bg-red-700"
                 onClick={() => setIsImportModalOpen(true)}
               >
                 <FileSpreadsheet className="w-4 h-4 mr-2" />

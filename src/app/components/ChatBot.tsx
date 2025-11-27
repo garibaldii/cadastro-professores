@@ -1,5 +1,5 @@
 import { Chat } from "@/components/ui/chat";
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 
 export function ChatBot() {
   const initialMenu =
@@ -28,16 +28,16 @@ export function ChatBot() {
 
   const [input, setInput] = useState("");
 
-  function handleInputChange(e) {
+  function handleInputChange(e: ChangeEvent<HTMLTextAreaElement>) {
     setInput(e.target.value);
   }
 
-  function sendMessage(role, content) {
+  function sendMessage(role: "user" | "assistant" | "system", content: string) {
     setMessages((prev) => [...prev, { id: String(Date.now()), role, content }]);
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
+  function handleSubmit(event?: { preventDefault?: () => void }) {
+    event?.preventDefault?.();
 
     const userMsg = input.trim();
     if (!userMsg) return;
@@ -124,7 +124,6 @@ export function ChatBot() {
           "2. Clique em **Exportar Relatório**\n\n" +
           "Você poderá ver todos os monitores ativos."
       );
-
     } else {
       sendMessage("assistant", "Por favor, selecione um item do menu.");
       sendMessage("assistant", initialMenu);

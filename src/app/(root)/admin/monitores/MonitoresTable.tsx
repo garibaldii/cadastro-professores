@@ -362,13 +362,13 @@ export default function MonitoresTable({
                           {canEdit && (
                             <MonitorEditSheet
                               monitorId={m.id}
-                              triggerClassName="px-2 sm:px-3 py-1.5 rounded border border-blue-600 text-blue-700 hover:bg-blue-50 disabled:opacity-50 transition-colors text-xs sm:text-sm font-medium"
+                              triggerClassName="px-2 sm:px-3 py-1.5 rounded border border-red-600 text-red-700 hover:bg-red-50 disabled:opacity-50 transition-colors text-xs sm:text-sm font-medium"
                             />
                           )}
                           {canValidate && (
                             <>
                               <button
-                                className="px-2 sm:px-3 py-1.5 rounded border border-green-600 text-green-700 hover:bg-green-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm font-medium"
+                                className="px-2 sm:px-3 py-1.5 rounded border border-red-600 text-red-700 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm font-medium"
                                 onClick={() => aprovar(m)}
                                 disabled={busy === m.id || ativo || !m.usuario?.id}
                               >
