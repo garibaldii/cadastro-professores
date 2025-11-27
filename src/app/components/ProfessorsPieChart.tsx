@@ -16,15 +16,10 @@ interface ProfessorsPieChartProps {
 }
 
 const COLORS = [
-  "#4D4D4F", // cinza institucional escuro
-  "#000000", // preto (contraste)
-  "#B5121B", // vermelho FATEC (cor principal)
-  "#A6A6A6", // cinza claro
-  "#CFCFCF", // cinza muito claro
-  "#E5E5E5", // cinza neutro
+  "#B5121B", // vermelho principal
+  "#D97A7A", // vermelho secundário
+  "#c0c0c0", // cinza claro
 ];
-
-
 
 const ProfessorsPieChart = ({ data }: ProfessorsPieChartProps) => {
   if (!data || data.length === 0) {

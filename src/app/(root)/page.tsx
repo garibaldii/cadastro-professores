@@ -5,12 +5,9 @@ import ProfessorsPieChart from "@/app/components/ProfessorsPieChart";
 export const dynamic = "force-dynamic";
 
 const COLORS = [
-  "#4D4D4F", // cinza institucional escuro
-  "#000000", // preto (contraste)
-  "#B5121B", // vermelho FATEC (cor principal)
-  "#A6A6A6", // cinza claro
-  "#CFCFCF", // cinza muito claro
-  "#E5E5E5", // cinza neutro
+  "#B5121B", // vermelho principal
+  "#D97A7A", // vermelho secundário
+  "#c0c0c0", // cinza claro para contraste
 ];
 
 interface Professor {
@@ -65,7 +62,7 @@ export default async function Home() {
       <h1 className="heading mb-8 text-gray-500">Secretaria</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div className="bg-gradient-to-br from-red-500 to-red-400 p-6 rounded-xl shadow-lg text-white">
+        <div className="bg-gradient-to-br from-[#B5121B] to-[#E34949] p-6 rounded-xl shadow-lg text-white">
           <h3 className="text-sm font-medium opacity-90 mb-2">
             Total de Professores
           </h3>
@@ -73,7 +70,7 @@ export default async function Home() {
           <p className="text-sm opacity-80 mt-2">Cadastrados no sistema</p>
         </div>
 
-        <div className="bg-gradient-to-br from-red-500 to-red-400 p-6 rounded-xl shadow-lg text-white">
+        <div className="bg-gradient-to-br from-[#7F0F16] to-[#B5121B] p-6 rounded-xl shadow-lg text-white">
           <h3 className="text-sm font-medium opacity-90 mb-2">
             Professores Ativos
           </h3>
@@ -86,7 +83,7 @@ export default async function Home() {
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-red-500 to-red-400 p-6 rounded-xl shadow-lg text-white">
+        <div className="bg-gradient-to-br from-[#4D4D4F] to-[#8F8F90] p-6 rounded-xl shadow-lg text-white">
           <h3 className="text-sm font-medium opacity-90 mb-2">
             Unidades Atendidas
           </h3>
