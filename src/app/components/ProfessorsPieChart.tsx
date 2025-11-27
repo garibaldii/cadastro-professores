@@ -16,15 +16,15 @@ interface ProfessorsPieChartProps {
 }
 
 const COLORS = [
-  "#64748B", // slate
-  "#6366F1", // indigo
-  "#8B5CF6", // violet
-  "#06B6D4", // cyan
-  "#10B981", // emerald
-  "#F59E0B", // amber
-  "#EF4444", // red
-  "#EC4899", // pink
+  "#4D4D4F", // cinza institucional escuro
+  "#000000", // preto (contraste)
+  "#B5121B", // vermelho FATEC (cor principal)
+  "#A6A6A6", // cinza claro
+  "#CFCFCF", // cinza muito claro
+  "#E5E5E5", // cinza neutro
 ];
+
+
 
 const ProfessorsPieChart = ({ data }: ProfessorsPieChartProps) => {
   if (!data || data.length === 0) {
